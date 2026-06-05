@@ -401,6 +401,7 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
   <div class="done" id="doneWrap">
     <div class="done-circle" id="doneCircle">✓</div>
     <div class="done-title" id="doneTitle"></div>
+    <div id="doneMsg" style="font-size:12px;color:#888;margin:6px 0 4px;line-height:1.7;"></div>
     <div class="done-badge" id="doneBadge"></div>
     <div class="done-card" id="doneCard"></div>
     <div class="done-note">담당자가 곧 예약을 확인 후 연락드리겠습니다 ✨<br>예약번호를 꼭 저장해 두세요.</div>
@@ -435,6 +436,10 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
     <div class="form-section">
       <label class="form-label">연락처</label>
       <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
+    </div>
+    <div class="form-section">
+      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
+      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
     </div>
 
     <!-- 옵션 선택 -->
@@ -477,16 +482,23 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
     <div class="pay-title">결제를 진행할까요?</div>
     <div class="pay-subtitle">아래 예약 내용을 최종 확인해주세요</div>
     <div class="pay-receipt" id="payReceipt"></div>
+    <div style="margin:14px 0 6px;font-size:12px;color:#999;">결제 방법을 선택해주세요</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button id="btnKakao" onclick="confirmPayment('kakao')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#FEE500;color:#3A1D1D;font-size:13px;font-weight:600;cursor:pointer;">💛 카카오페이</button>
+      <button id="btnPaypal" onclick="confirmPayment('paypal')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#003087;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">🌐 PayPal</button>
+    </div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:14px;line-height:1.7;">
+      이메일로 결제 링크가 전송됩니다.<br>결제 완료 후 예약이 확정됩니다.
+    </div>
     <div class="pay-actions">
       <button class="btn-back" onclick="backToBooking()">← 돌아가기</button>
-      <button class="btn-pay" id="btnPay" onclick="confirmPayment()">결제 완료</button>
     </div>
   </div>
 </div>
 
 <script>
 // ★ 구글 Apps Script URL (purpose_booking과 동일한 URL 사용)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwosvSC6ZXX7dlQ8JNOI0OALDDu31jCVeUeoVScIhX7PFcaacbfb7mdypBajwzQ6WWj/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3HBmpef_sXwYxHal37FRnZNad8i30YDkhVoHxSW6U-mK-xZ5Cafrl1sIeOZgwTa1l/exec';
 
 if (!APPS_SCRIPT_URL) document.getElementById('setupBanner').classList.add('show');
 
@@ -614,7 +626,6 @@ async function loadSlots(ds) {
   try {
     const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`);
     const data = await res.json();
-    // data.slots: [{hour, available}] 형태 (Apps Script 반환값)
     if (data.slots && data.slots.length > 0 && 'available' in data.slots[0]) {
       renderSlots(data.slots.map(s => ({hour: s.hour, booked: !s.available})));
     } else {
@@ -705,7 +716,7 @@ function checkReady() {
   const optOk = !m.options || !!selectedOption;
   document.getElementById('btnNext').disabled = !(selectedDate && selectedHour!==null && n && p && optOk);
 }
-document.addEventListener('input', e => { if(['inputName','inputPhone'].includes(e.target.id)) checkReady(); });
+document.addEventListener('input', e => { if(['inputName','inputPhone','inputEmail'].includes(e.target.id)) checkReady(); });
 
 function getSelectedPrice() {
   const m = menus[current];
@@ -717,11 +728,12 @@ function goToPayStep() {
   const m = menus[current];
   const name = document.getElementById('inputName').value.trim();
   const phone = document.getElementById('inputPhone').value.trim();
+  const email = document.getElementById('inputEmail') ? document.getElementById('inputEmail').value.trim() : '';
   const [y,mo,d] = selectedDate.split('-');
   const ds = `${y}년 ${parseInt(mo)}월 ${parseInt(d)}일`;
   const sel = getSelectedPrice();
   document.getElementById('payIcon').textContent = m.emoji;
-  document.getElementById('btnPay').style.background = m.color;
+  
   document.getElementById('payReceipt').innerHTML = `
     <div class="pay-row"><span class="pay-label">프로그램</span><span class="pay-value" style="font-size:12px;">${sel.label}</span></div>
     ${m.duration ? `<div class="pay-row"><span class="pay-label">소요시간</span><span class="pay-value">${m.duration}</span></div>` : ''}
@@ -736,24 +748,30 @@ function goToPayStep() {
 }
 function backToBooking() { document.getElementById('payOverlay').classList.remove('open'); setInd(1); }
 
-async function confirmPayment() {
-  const btn = document.getElementById('btnPay');
-  btn.disabled=true; btn.textContent='처리 중...';
+const KAKAOPAY_URL = 'https://qr.kakaopay.com/FRXDr9Jit';
+const PAYPAL_URL = 'https://www.paypal.me/jonghyun78';
+
+async function confirmPayment(method) {
+  const btnKakao = document.getElementById('btnKakao');
+  const btnPaypal = document.getElementById('btnPaypal');
+  btnKakao.disabled=true; btnPaypal.disabled=true;
+  (method==='kakao'?btnKakao:btnPaypal).textContent='처리 중...';
   const name = document.getElementById('inputName').value.trim();
   const phone = document.getElementById('inputPhone').value.trim();
+  const email = document.getElementById('inputEmail') ? document.getElementById('inputEmail').value.trim() : '';
   const m = menus[current];
   const sel = getSelectedPrice();
-  if(!APPS_SCRIPT_URL) { showDone({bookingId:'RB'+Date.now().toString().slice(-8)},name); btn.disabled=false; btn.textContent='결제 완료'; return; }
+  if(!APPS_SCRIPT_URL) { window.open(method==='kakao'?KAKAOPAY_URL:PAYPAL_URL,'_blank'); showDone({bookingId:'RB'+Date.now().toString().slice(-8)},name); btnKakao.disabled=false; btnPaypal.disabled=false; return; }
   try {
     const res = await fetch(APPS_SCRIPT_URL, {
       method:'POST',
-      body: JSON.stringify({action:'booking', name, phone, date:selectedDate, hour:selectedHour, duration:getDuration(current), program:sel.label, price:sel.price})
+      body: JSON.stringify({action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:getDuration(current), program:sel.label, price:sel.price})
     });
     const data = await res.json();
-    if(data.success) { showDone(data,name); }
+    if(data.success) { window.open(method==='kakao'?KAKAOPAY_URL:PAYPAL_URL,'_blank'); showDone(data,name); }
     else { alert(data.message||'예약 중 오류가 발생했습니다.'); }
   } catch(e) { alert('서버 연결 오류입니다. 잠시 후 다시 시도해주세요.'); }
-  btn.disabled=false; btn.textContent='결제 완료';
+  btnKakao.disabled=false; btnPaypal.disabled=false; btnKakao.textContent='💛 카카오페이'; btnPaypal.textContent='🌐 PayPal';
 }
 
 function showDone(data, name) {
@@ -766,7 +784,7 @@ function showDone(data, name) {
   document.querySelectorAll('.tab-panel.active .grid').forEach(g=>g.style.display='none');
   setInd(3);
   document.getElementById('doneCircle').style.background = m.color;
-  document.getElementById('doneTitle').textContent = `${name}님, 예약이 확정되었습니다!`;
+  document.getElementById('doneTitle').textContent = `${name}님, 예약이 접수되었습니다!`;
   document.getElementById('doneBadge').textContent = `예약번호: ${data.bookingId}`;
   document.getElementById('doneCard').innerHTML = `
     <div class="done-row"><span class="done-row-label">프로그램</span><span class="done-row-value" style="font-size:12px;">${sel.label}</span></div>
@@ -775,7 +793,7 @@ function showDone(data, name) {
     <div class="done-row"><span class="done-row-label">시간</span><span class="done-row-value">${selectedHour}:00 ~ ${endTimeStr(selectedHour, getDuration(current))}</span></div>
     <div class="done-row"><span class="done-row-label">결제 금액</span><span class="done-row-value" style="color:${m.color}">${sel.priceStr}</span></div>
   `;
-  document.getElementById('doneWrap').classList.add('open');
+  document.getElementById('doneMsg').innerHTML = '이메일로 결제 링크가 전송되었습니다.<br>결제 완료 후 예약이 최종 확정됩니다.'; document.getElementById('doneWrap').classList.add('open');
 }
 
 function goBack() {
