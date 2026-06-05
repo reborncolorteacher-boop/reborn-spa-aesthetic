@@ -555,8 +555,12 @@ async function loadSlots(ds) {
   try {
     const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`);
     const data = await res.json();
-    const booked = (data.slots||[]).map(s=>({hour:s.hour, duration:s.duration||2}));
-    renderSlots(getAvailableHours(booked));
+    if (data.slots && data.slots.length > 0 && 'available' in data.slots[0]) {
+      renderSlots(data.slots.map(s => ({hour: s.hour, booked: !s.available})));
+    } else {
+      const booked = (data.slots||[]).map(s=>({hour:s.hour, duration:s.duration||2}));
+      renderSlots(getAvailableHours(booked));
+    }
   } catch(e) {
     wrap.innerHTML = '<div class="slots-loading" style="color:#e88;">시간 조회 중 오류가 발생했습니다.</div>';
   }

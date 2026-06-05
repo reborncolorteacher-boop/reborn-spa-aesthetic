@@ -614,9 +614,13 @@ async function loadSlots(ds) {
   try {
     const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`);
     const data = await res.json();
-    // data.slots: [{hour, duration}] 또는 [{hour}] (하위호환)
-    const booked = (data.slots||[]).map(s=>({hour:s.hour, duration:s.duration||2}));
-    renderSlots(getAvailableHours(booked));
+    // data.slots: [{hour, available}] 형태 (Apps Script 반환값)
+    if (data.slots && data.slots.length > 0 && 'available' in data.slots[0]) {
+      renderSlots(data.slots.map(s => ({hour: s.hour, booked: !s.available})));
+    } else {
+      const booked = (data.slots||[]).map(s=>({hour:s.hour, duration:s.duration||2}));
+      renderSlots(getAvailableHours(booked));
+    }
   } catch(e) {
     renderSlots(getAvailableHours([]));
   }
