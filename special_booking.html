@@ -565,7 +565,7 @@ async function loadSlots(ds) {
     return;
   }
   try {
-    const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`);
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`, {redirect:'follow'});
     const data = await res.json();
     if (data.slots && data.slots.length > 0 && 'available' in data.slots[0]) {
       renderSlots(data.slots.map(s => ({hour: s.hour, booked: !s.available})));
