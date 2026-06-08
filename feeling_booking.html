@@ -485,7 +485,7 @@ async function confirmPayment(method) {
   const m = menus[current];
 
   if (!APPS_SCRIPT_URL) {
-    showDone({ bookingId: 'LB' + Date.now().toString().slice(-8) }, name);
+    showDone({ bookingId: 'LB' + Date.now().toString().slice(-8) }, name, method);
     btnKakao.disabled=false; btnPaypal.disabled=false; btnKakao.textContent='💛 카카오페이'; btnPaypal.textContent='🌐 PayPal'; return;
   }
   try {
@@ -496,13 +496,13 @@ async function confirmPayment(method) {
       body: JSON.stringify({ action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:getDuration(current), program:m.name, price:m.priceNum })
     });
     const data = await res.json();
-    if (data.success) { window.open(method==='kakao'?KAKAOPAY_URL:PAYPAL_URL,'_blank'); showDone(data, name); }
+    if (data.success) { showDone(data, name, method); }
     else { alert(data.message || '예약 중 오류가 발생했습니다.'); }
   } catch(e) { alert('서버 연결 오류입니다. 잠시 후 다시 시도해주세요.'); }
   btnKakao.disabled=false; btnPaypal.disabled=false; btnKakao.textContent='💛 카카오페이'; btnPaypal.textContent='🌐 PayPal';
 }
 
-function showDone(data, name) {
+function showDone(data, name, method='kakao') {
   const m = menus[current];
   const [y,mo,d] = selectedDate.split('-');
   const ds = `${y}년 ${parseInt(mo)}월 ${parseInt(d)}일 (${getDayOfWeek(selectedDate)}요일)`;
@@ -519,7 +519,11 @@ function showDone(data, name) {
     <div class="done-row"><span class="done-row-label">시간</span><span class="done-row-value">${selectedHour}:00 ~ ${endTimeStr(selectedHour, getDuration(current))}</span></div>
     <div class="done-row"><span class="done-row-label">결제 금액</span><span class="done-row-value" style="color:${m.color}">${m.price}</span></div>
   `;
-  document.getElementById('doneMsg').innerHTML = '이메일로 결제 링크가 전송되었습니다.<br>결제 완료 후 예약이 최종 확정됩니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span>'; document.getElementById('doneWrap').classList.add('open');
+  document.getElementById('doneMsg').innerHTML = `
+    <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">아래 버튼으로 결제를 진행해주세요</div>
+    <a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>
+    <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
+  `; document.getElementById('doneWrap').classList.add('open');
 }
 
 function getDayOfWeek(ds){const d=['일','월','화','수','목','금','토'];return d[new Date(ds).getDay()];}
