@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Re'born Spa — 예약 안내</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+
+:root {
+  --cream: #faf9f6;
+  --warm-white: #f5f3ef;
+  --stone: #e8e2db;
+  --mid: #d4cdc6;
+  --warm-gray: #9a8c7e;
+  --text-sub: #7a6e65;
+  --text: #2a2320;
+  --accent: #b07b5a;
+  --accent-light: #c4957a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(176,123,90,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 90%, rgba(196,149,122,.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 1.2rem 5rem;
+}
+
+/* ── BRAND ── */
+.brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  animation: fadeDown .8s ease both;
+}
+.brand-eyebrow {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: .35em;
+  color: var(--warm-gray);
+  text-transform: uppercase;
+  border: .5px solid var(--mid);
+  border-radius: 20px;
+  padding: 5px 16px;
+  margin-bottom: 16px;
+}
+.brand-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 300;
+  letter-spacing: .08em;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.brand-logo span { color: var(--accent); }
+.brand-tagline {
+  font-size: 12px;
+  color: var(--warm-gray);
+  letter-spacing: .12em;
+  margin-bottom: 18px;
+}
+.brand-divider {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, transparent, var(--mid), transparent);
+  margin: 0 auto;
+}
+
+/* ── NOTICE CARD ── */
+.notice-card {
+  background: #fff;
+  border: .5px solid var(--stone);
+  border-radius: 20px;
+  padding: 2.4rem 2rem;
+  margin-bottom: 1.5rem;
+  animation: fadeUp .7s .2s ease both;
+}
+
+.notice-intro {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.85;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: .5px solid var(--stone);
+}
+.notice-intro strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.notice-list {
+  list-style: none;
+  padding: 0;
+}
+.notice-list li {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--text-sub);
+  padding: 1rem 0;
+  border-bottom: .5px solid var(--warm-white);
+}
+.notice-list li:last-child { border-bottom: none; }
+
+.notice-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+/* ── 동의 체크박스 ── */
+.agree-wrap {
+  background: var(--warm-white);
+  border: .5px solid var(--stone);
+  border-radius: 14px;
+  padding: 1.4rem 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: background .2s;
+  animation: fadeUp .7s .3s ease both;
+}
+.agree-wrap:hover { background: #f0ece6; }
+
+.agree-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--mid);
+  background: #fff;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+}
+.agree-check.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.agree-check.checked::after {
+  content: '✓';
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.agree-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ── CTA 버튼 ── */
+.btn-proceed {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--mid);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  cursor: not-allowed;
+  transition: all .25s;
+  animation: fadeUp .7s .4s ease both;
+}
+.btn-proceed.active {
+  background: var(--accent);
+  cursor: pointer;
+}
+.btn-proceed.active:hover {
+  background: #9c6a49;
+  transform: translateY(-1px);
+}
+
+/* 영어 섹션 구분선 */
+.lang-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2rem 0 1.5rem;
+  color: var(--warm-gray);
+  font-size: 11px;
+  letter-spacing: .1em;
+}
+.lang-divider::before, .lang-divider::after {
+  content: '';
+  flex: 1;
+  height: .5px;
+  background: var(--stone);
+}
+
+/* 애니메이션 */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 구글 번역 ── */
+#google_translate_element {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+}
+</style>
+</head>
+<body>
+
+<!-- 구글 번역 -->
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ko',
+    includedLanguages: 'en,ja,zh-CN,zh-TW,fr,de,es,ru,vi,th,ar,tr',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="wrap">
+
+  <!-- 브랜드 헤더 -->
+  <div class="brand">
+    <div class="brand-eyebrow">Booking Guide</div>
+    <div class="brand-logo">Re<span>'</span>born Spa</div>
+    <div class="brand-tagline">AESTHETIC</div>
+    <div class="brand-divider"></div>
+  </div>
+
+  <!-- 안내 카드 -->
+  <div class="notice-card">
+
+    <!-- 한국어 -->
+    <p class="notice-intro">
+      <strong>프로그램 선택 전 아래 안내사항을 반드시 확인해 주시기 바랍니다.</strong><br><br>
+      예약 진행 및 예약금 결제는 본 페이지의 예약 정책, 취소 및 환불 규정,
+      이용 안내에 동의한 것으로 간주됩니다.<br>
+      안내사항을 확인하지 않아 발생하는 예약 변경, 취소 수수료, 이용 제한
+      등의 불이익은 고객 본인에게 책임이 있습니다.<br>
+      원활한 서비스 제공을 위해 반드시 내용을 숙지하신 후 예약을 진행해 주시기 바랍니다.
+    </p>
+
+    <ul class="notice-list">
+      <li>
+        <span class="notice-num">1</span>
+        <span>리본스파에스테틱은 여성 중심 웰니스 공간으로 <strong>남성 단독 고객의 예약은 진행이 어렵습니다.</strong>
+        남성 고객은 여성 파트너와 동반 방문 시에만 예약이 가능합니다.
+        커플 또는 동시간대 예약을 원하시는 경우 사전에 이메일로 알려주시기 바랍니다.</span>
+      </li>
+      <li>
+        <span class="notice-num">2</span>
+        <span>예약시스템은 <strong>예약자 1인만 가능</strong>합니다.
+        2인 이상 예약을 원할 경우 사전에 이메일로 문의주시기 바랍니다.</span>
+      </li>
+      <li>
+        <span class="notice-num">3</span>
+        <span><strong>예약금(1인당 5만원)</strong>이 결제 완료되어야 예약이 확정되며,
+        <strong>3시간 이내에 입금되지 않으면 예약이 취소</strong>됩니다.</span>
+      </li>
+      <li>
+        <span class="notice-num">4</span>
+        <span><strong>30분 이상 지각 시 노쇼 처리</strong>되어 관리를 받으실 수 없습니다.</span>
+      </li>
+      <li>
+        <span class="notice-num">5</span>
+        <span>
+          예약 <strong>3일 전 취소 → 선입금 100% 환불</strong><br>
+          예약 <strong>하루 전 취소 → 30% 환불</strong><br>
+          <span style="color:#c0392b;font-weight:500;">당일 취소 및 노쇼 → 예약금 환불 불가</span>
+        </span>
+      </li>
+    </ul>
+
+    <!-- 영어 구분선 -->
+    <div class="lang-divider">English</div>
+
+    <p class="notice-intro" style="margin-bottom:1.5rem;">
+      <strong>Please read the following information carefully before booking.</strong><br><br>
+      By proceeding with a reservation and paying the deposit, you agree to our
+      booking policy, cancellation &amp; refund policy, and usage guidelines.<br>
+      Any inconvenience arising from not reading the guidelines — including
+      change fees, cancellation fees, or service restrictions — is the
+      responsibility of the customer.
+    </p>
+
+    <ul class="notice-list">
+      <li>
+        <span class="notice-num">1</span>
+        <span>Re'born Spa Aesthetic is a <strong>women-centered wellness space.
+        Solo male bookings are not available.</strong>
+        Male guests may only visit when accompanied by a female partner.
+        For couples or same-time bookings, please notify us by email in advance.</span>
+      </li>
+      <li>
+        <span class="notice-num">2</span>
+        <span>The booking system allows <strong>one person per reservation.</strong>
+        For groups of two or more, please contact us by email in advance.</span>
+      </li>
+      <li>
+        <span class="notice-num">3</span>
+        <span>Your reservation is confirmed only after the <strong>deposit (₩50,000 per person)</strong>
+        is paid. If payment is not received <strong>within 3 hours, the reservation will be automatically cancelled.</strong></span>
+      </li>
+      <li>
+        <span class="notice-num">4</span>
+        <span>If you are <strong>more than 30 minutes late, it will be treated as a no-show</strong>
+        and the service cannot be provided.</span>
+      </li>
+      <li>
+        <span class="notice-num">5</span>
+        <span>
+          Cancel <strong>3+ days before → 100% deposit refund</strong><br>
+          Cancel <strong>1 day before → 30% refund</strong><br>
+          <span style="color:#c0392b;font-weight:500;">Same-day cancellation / no-show → No refund</span>
+        </span>
+      </li>
+    </ul>
+
+  </div>
+
+  <!-- 동의 체크박스 -->
+  <div class="agree-wrap" id="agreeWrap" onclick="toggleAgree()">
+    <div class="agree-check" id="agreeCheck"></div>
+    <div class="agree-text">
+      위 내용을 확인하였으며, 예약 정책에 동의합니다.<br>
+      <span style="font-size:12px;color:var(--warm-gray);">
+        I have read and agree to the booking policy above.
+      </span>
+    </div>
+  </div>
+
+  <!-- 예약 시작 버튼 -->
+  <button class="btn-proceed" id="btnProceed" onclick="proceed()" disabled>
+    예약 시작하기 &nbsp;/&nbsp; Start Booking →
+  </button>
+
+</div>
+
+<script>
+  let agreed = false;
+
+  function toggleAgree() {
+    agreed = !agreed;
+    const check = document.getElementById('agreeCheck');
+    const btn   = document.getElementById('btnProceed');
+    if (agreed) {
+      check.classList.add('checked');
+      btn.classList.add('active');
+      btn.disabled = false;
+    } else {
+      check.classList.remove('checked');
+      btn.classList.remove('active');
+      btn.disabled = true;
+    }
+  }
+
+  function proceed() {
+    if (!agreed) return;
+    // 동의 완료 표시 후 메뉴 페이지로 이동
+    sessionStorage.setItem('agreed', 'true');
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>
