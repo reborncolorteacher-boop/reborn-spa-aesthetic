@@ -765,6 +765,7 @@ async function confirmPayment(method) {
   try {
     const res = await fetch(APPS_SCRIPT_URL, {
       method:'POST',
+      redirect:'follow',
       headers:{'Content-Type':'text/plain'},
       body: JSON.stringify({action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:getDuration(current), program:sel.label, price:sel.price})
     });

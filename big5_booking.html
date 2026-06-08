@@ -336,9 +336,9 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0CYWFvu8DXEOR
 
 const menus = {
   faceFoot:     { emoji:'🦶', name:'Face + Foot',       price:'280,000 ₩', priceNum:'280,000', color:'#4a7fa5', duration:2 },
-  backFaceFoot: { emoji:'🌊', name:'Back + Face + Foot', price:'330,000 ₩', priceNum:'330,000', color:'#7a5ea5' },
-  hope:         { emoji:'🌿', name:'Hope',               price:'450,000 ₩', priceNum:'450,000', color:'#2BA87A' },
-  harmony:      { emoji:'✨', name:'Harmony',            price:'350,000 ₩', priceNum:'350,000', color:'#c07840' },
+  backFaceFoot: { emoji:'🌊', name:'Back + Face + Foot', price:'330,000 ₩', priceNum:'330,000', color:'#7a5ea5', duration:2 },
+  hope:         { emoji:'🌿', name:'Hope',               price:'450,000 ₩', priceNum:'450,000', color:'#2BA87A', duration:2 },
+  harmony:      { emoji:'✨', name:'Harmony',            price:'350,000 ₩', priceNum:'350,000', color:'#c07840', duration:2 },
   faceScalp:    { emoji:'💆', name:'Face + Scalp',       price:'305,000 ₩', priceNum:'305,000', color:'#b05a8a', duration:2 }
 };
 
@@ -528,6 +528,7 @@ async function confirmPayment(method) {
   try {
     const res = await fetch(APPS_SCRIPT_URL, {
       method:'POST',
+      redirect:'follow',
       headers:{'Content-Type':'text/plain'},
       body: JSON.stringify({ action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:m.duration||2, endHour:selectedHour+(m.duration||2), dayOfWeek:getDayOfWeek(selectedDate), program:m.name, price:m.priceNum })
     });
@@ -558,6 +559,7 @@ function showDone(data, name) {
   document.getElementById('doneMsg').innerHTML = '이메일로 결제 링크가 전송되었습니다.<br>결제 완료 후 예약이 최종 확정됩니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span>'; document.getElementById('doneWrap').classList.add('open');
 }
 
+function getDayOfWeek(ds){const d=['일','월','화','수','목','금','토'];return d[new Date(ds).getDay()];}
 function closeModal() { document.getElementById('overlay').classList.remove('open'); }
 function handleBgClick(e) { if (e.target===document.getElementById('overlay')) closeModal(); }
 function goBack() { document.getElementById('grid').style.display='grid'; document.getElementById('doneWrap').classList.remove('open'); }
