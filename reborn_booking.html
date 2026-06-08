@@ -186,6 +186,20 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
 </style>
 </head>
 <body>
+<!-- 구글 번역 -->
+<div id="google_translate_element" style="position:fixed;top:12px;right:12px;z-index:9999;"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ko',
+    includedLanguages: 'en,ja,zh-CN,zh-TW,fr,de,es,ru,vi,th,ar,tr',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <div class="wrap">
   <div class="setup-banner" id="setupBanner">⚙️ <strong>관리자 설정 필요:</strong> APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0CYWFvu8DXEORBNZ5m3fp3tYKG7JdXwjlnn2um7EuEZBEAbe0MJciIVWrsk4We_cI/exec'</div>
 
