@@ -651,7 +651,7 @@ async function loadSlots(ds) {
       renderSlots(getAvailableHours(booked));
     }
   } catch(e) {
-    document.getElementById('slotsWrap').innerHTML = '<div class="slots-loading" style="color:#e07070;">오류: ' + e.message + '</div>';
+    renderSlots(getAvailableHours([]));
   }
 }
 function renderSlots(slots) {
