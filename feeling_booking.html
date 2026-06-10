@@ -419,6 +419,10 @@ async function loadSlots(ds) {
   try {
     const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`, {redirect:'follow'});
     const data = await res.json();
+    if (data.closed) {
+      wrap.innerHTML = '<div class="slots-loading" style="color:#e07070; text-align:center; padding:16px;">해당 날짜는 휴무일입니다.</div>';
+      return;
+    }
     if (data.slots && data.slots.length > 0 && 'available' in data.slots[0]) {
       renderSlots(data.slots.map(s => ({hour: s.hour, booked: !s.available})));
     } else {
