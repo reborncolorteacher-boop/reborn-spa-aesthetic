@@ -381,12 +381,6 @@ body::before {
 </style>
 </head>
 <body>
-<script>
-  // 안내 페이지 동의 없이 직접 접속 시 readme.html로 리다이렉트
-  if (!sessionStorage.getItem('agreed')) {
-    window.location.replace('readme.html');
-  }
-</script>
 <!-- 구글 번역 -->
 <div id="google_translate_element" style="position:fixed;top:12px;right:12px;z-index:9999;"></div>
 <script>
@@ -515,6 +509,7 @@ function googleTranslateElementInit() {
           <span class="prog-tag">영유아</span>
           <span class="prog-tag">어린이</span>
           <span class="prog-tag">임산부</span>
+          <span class="prog-tag">싱잉볼</span>
         </div>
         <button class="prog-btn">
           예약하기 →
