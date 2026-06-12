@@ -371,7 +371,7 @@ function googleTranslateElementInit() {
       <button id="btnPaypal" onclick="confirmPayment('paypal')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#003087;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">🌐 PayPal</button>
     </div>
     <div style="font-size:11px;color:#aaa;margin-bottom:14px;line-height:1.7;">
-      이메일로 결제 링크가 전송됩니다.<br>결제 완료 후 예약이 확정됩니다.
+      버튼을 누르면 예약 접수 후 결제 페이지가 바로 열립니다.<br>예약금 결제 완료 후 예약이 최종 확정됩니다.<br>Your booking is confirmed only after the deposit payment.
     </div>
     <div class="pay-actions">
       <button class="btn-back" onclick="backToBooking()">← 돌아가기</button>
@@ -681,7 +681,9 @@ function backToBooking() {
 }
 
 const KAKAOPAY_URL = 'https://qr.kakaopay.com/FRXDr9Jit';
-const PAYPAL_URL = 'https://www.paypal.me/jonghyun78';
+const PAYPAL_URL = 'https://www.paypal.me/jonghyun78/40USD';
+const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const KAKAO_QR_IMG = 'data:image/png;base64,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';
 
 async function confirmPayment(method) {
   const btnKakao = document.getElementById('btnKakao');
@@ -706,7 +708,7 @@ async function confirmPayment(method) {
       body: JSON.stringify({ action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:2, program:sel.label, price:sel.price })
     });
     const data = await res.json();
-    if (data.success) { showDone(data, name, method); }
+    if (data.success) { if(method==='paypal'||IS_MOBILE){window.open(method==='kakao'?KAKAOPAY_URL:PAYPAL_URL,'_blank');} showDone(data, name, method); }
     else { alert(data.message || '예약 중 오류가 발생했습니다.'); }
   } catch(e) { alert('서버 연결 오류입니다. 잠시 후 다시 시도해주세요.'); }
   btnKakao.disabled=false; btnPaypal.disabled=false; btnKakao.textContent='💛 카카오페이'; btnPaypal.textContent='🌐 PayPal';
@@ -731,8 +733,8 @@ function showDone(data, name, method='kakao') {
     <div class="done-row"><span class="done-row-label">결제 금액</span><span class="done-row-value" style="color:${m.color}">${sel.priceStr}</span></div>
   `;
   document.getElementById('doneMsg').innerHTML = `
-    <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">아래 버튼으로 결제를 진행해주세요</div>
-    <a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>
+    <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">${method==='kakao'&&!IS_MOBILE?'아래 QR 코드를 휴대폰 카메라로 스캔해 결제해주세요':'결제 페이지가 새 창으로 열렸습니다. 열리지 않았다면 아래 버튼을 눌러주세요 / Please complete your deposit payment below'}</div>
+    ${method==='kakao'&&!IS_MOBILE?`<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — 50,000원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`:`<a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>`}
     <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
   `; document.getElementById('doneWrap').classList.add('open');
 }
