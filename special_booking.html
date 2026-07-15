@@ -367,6 +367,14 @@ function googleTranslateElementInit() {
 
     <div class="grid grid-single">
       <div class="card prenatal-total">
+        <div class="card-top"><div class="card-dot"></div><div class="card-category">SINGING BOWL · MASTER</div></div>
+        <div class="card-name">리본 마스터 얼라인먼트 리추얼</div>
+        <div class="card-age">페이스 + 바디 + 싱잉볼</div>
+        <div class="card-tagline">단 한 분만을 위한 반나절 프라이빗 세션, 마스터 테라피스트의 실시간 얼라인먼트</div>
+        <div class="card-desc prenatal-total">오직 한 분만을 위해 반나절 동안 공간 전체를 성소로 비워두는 최고 권위의 세션입니다. 리본의 마스터 테라피스트가 내담자의 당일 호흡과 근막의 엉킴을 실시간으로 읽어내며 진행합니다.</div>
+        <button class="price-btn" onclick="openBooking('master_alignment')">예약하기 — 1,200,000 ₩</button>
+      </div>
+      <div class="card prenatal-total">
         <div class="card-top"><div class="card-dot"></div><div class="card-category">SINGING BOWL</div></div>
         <div class="card-name">싱잉볼&amp;코어밸런스</div>
         <div class="card-age">성인 권장</div>
@@ -491,6 +499,7 @@ const menus = {
   prenatal_deep:    { emoji:'💆', name:'Deep Balance Touch',           detail:'임산부 25~40주', price:'300,000 ₩', priceNum:'300,000', color:'#C97B5A', duration:'120분' },
   prenatal_total:   { emoji:'✨', name:"RE'BORN 토탈 맞춤 임산부 케어", detail:'임신 전 기간 / 출산 후', price:'370,000 ₩', priceNum:'370,000', color:'#B05A3A', duration:'120분' },
   singing_bowl:     { emoji:'🔔', name:'싱잉볼&코어밸런스', detail:'싱잉볼 테라피', price:'280,000 ₩', priceNum:'280,000', color:'#B05A3A', duration:'60분' },
+  master_alignment: { emoji:'👑', name:"리본 마스터 얼라인먼트 리추얼", detail:'페이스+바디+싱잉볼', price:'1,200,000 ₩', priceNum:'1,200,000', color:'#B05A3A', duration:'180분', dur:3, depositKRW:'300,000', depositUSD:'240' },
 };
 
 let current = null, selectedDate = null, selectedHour = null, calYear, calMonth;
@@ -602,10 +611,7 @@ async function loadSlots(ds) {
     const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`, {redirect:'follow'});
     const data = await res.json();
     if (data.closed) {
-      const msg = data.outOfRange
-        ? '예약은 당일부터 1년 이내까지만 가능합니다.'
-        : '해당 날짜는 휴무일입니다.';
-      wrap.innerHTML = `<div class="slots-loading" style="color:#e07070; text-align:center; padding:16px;">${msg}</div>`;
+      wrap.innerHTML = '<div class="slots-loading" style="color:#e07070; text-align:center; padding:16px;">해당 날짜는 휴무일입니다.</div>';
       return;
     }
     if (data.slots && data.slots.length > 0 && 'available' in data.slots[0]) {
@@ -678,6 +684,7 @@ function backToBooking() {
 
 const KAKAOPAY_URL = 'https://qr.kakaopay.com/FRXDr9Jit';
 const PAYPAL_URL = 'https://www.paypal.me/jonghyun78/40USD';
+function getPaypalUrl(m) { return `https://www.paypal.me/jonghyun78/${(m&&m.depositUSD)||'40'}USD`; }
 const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const KAKAO_QR_IMG = 'data:image/png;base64,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';
 
@@ -703,7 +710,7 @@ async function confirmPayment(method) {
       body: JSON.stringify({ action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:m.dur||2, endHour:selectedHour+(m.dur||2), dayOfWeek:getDayOfWeek(selectedDate), program:m.name, price:m.priceNum })
     });
     const data = await res.json();
-    if (data.success) { if(method==='paypal'||IS_MOBILE){window.open(method==='kakao'?KAKAOPAY_URL:PAYPAL_URL,'_blank');} showDone(data, name, method); }
+    if (data.success) { if(method==='paypal'||IS_MOBILE){window.open(method==='kakao'?KAKAOPAY_URL:getPaypalUrl(m),'_blank');} showDone(data, name, method); }
     else { alert(data.message || '예약 중 오류가 발생했습니다.'); }
   } catch(e) { alert('서버 연결 오류입니다. 잠시 후 다시 시도해주세요.'); }
   btnKakao.disabled=false; btnPaypal.disabled=false; btnKakao.textContent='💛 카카오페이'; btnPaypal.textContent='🌐 PayPal';
@@ -729,7 +736,7 @@ function showDone(data, name, method='kakao') {
   `;
   document.getElementById('doneMsg').innerHTML = `
     <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">${method==='kakao'&&!IS_MOBILE?'아래 QR 코드를 휴대폰 카메라로 스캔해 결제해주세요':'결제 페이지가 새 창으로 열렸습니다. 열리지 않았다면 아래 버튼을 눌러주세요 / Please complete your deposit payment below'}</div>
-    ${method==='kakao'&&!IS_MOBILE?`<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — 50,000원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`:`<a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>`}
+    ${method==='kakao'&&!IS_MOBILE?`<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — ${m.depositKRW||'50,000'}원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`:`<a href="${method==='kakao'?KAKAOPAY_URL:getPaypalUrl(m)}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?`💛 카카오페이로 결제하기 — ${m.depositKRW||'50,000'}원`:`🌐 PayPal로 결제하기 — $${m.depositUSD||'40'} USD`}</a>`}
     <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
   `; document.getElementById('doneWrap').classList.add('open');
 }
