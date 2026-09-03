@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나에게 맞는 케어 찾기 — Reborn Spa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+@font-face {
+  font-family: 'Euljiro';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/BMEULJIRO.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+:root {
+  --cream: #faf9f6;
+  --warm-white: #f5f3ef;
+  --stone: #e8e2db;
+  --mid: #d4cdc6;
+  --warm-gray: #9a8c7e;
+  --text-sub: #7a6e65;
+  --text: #2a2320;
+  --accent: #b07b5a;
+  --accent-light: #c4957a;
+  --gold: #c9a84c;
+  --gold-light: #f0d98a;
+  --gold-pale: #fdf6e3;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(176,123,90,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 90%, rgba(201,168,76,.07) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.6rem 1.2rem 5rem;
+}
+
+/* ── BRAND ── */
+.brand { text-align: center; margin-bottom: 1.8rem; animation: fadeDown .7s ease both; }
+.brand-eyebrow {
+  display: inline-block; font-size: 10px; letter-spacing: .38em; color: var(--warm-gray);
+  text-transform: uppercase; border: .5px solid var(--gold-light); border-radius: 20px;
+  padding: 5px 18px; margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba(253,246,227,.6), rgba(255,255,255,.4));
+}
+.brand-title {
+  font-family: 'Euljiro', -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-weight: 400; font-size: 32px;
+  letter-spacing: .01em; color: var(--text); line-height: 1.4;
+}
+.brand-sub { font-size: 12px; color: var(--warm-gray); margin-top: 8px; letter-spacing: .04em; }
+
+/* ── PROGRESS ── */
+.progress-wrap { display:flex; align-items:center; justify-content:center; gap:8px; margin: 1.6rem 0 2rem; }
+.progress-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mid); transition: all .3s; }
+.progress-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
+.progress-dot.done { background: var(--gold); }
+
+/* ── CARD (질문/결과 공통 프레임) ── */
+.stage { display:none; animation: fadeUp .5s ease both; }
+.stage.active { display:block; }
+
+.q-card {
+  background: #fff; border: .5px solid var(--stone); border-radius: 22px;
+  padding: 2.2rem 1.8rem; box-shadow: 0 6px 28px rgba(176,123,90,.08), 0 1px 4px rgba(0,0,0,.03);
+}
+.q-eyebrow { font-size: 10px; letter-spacing: .3em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+.q-title { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 24px; font-weight: 400; color: var(--text); margin-bottom: 4px; line-height: 1.35; }
+.q-desc { font-size: 12px; color: var(--warm-gray); margin-bottom: 1.6rem; }
+
+.opt-list { display: flex; flex-direction: column; gap: 10px; }
+.opt-item {
+  display:flex; align-items:center; gap: 12px; padding: 14px 16px; border-radius: 14px;
+  border: .5px solid var(--stone); background: var(--cream); cursor: pointer;
+  transition: all .18s; text-align:left;
+}
+.opt-item:hover { border-color: var(--accent-light); transform: translateX(2px); }
+.opt-item .opt-emoji { font-size: 20px; flex-shrink: 0; width: 26px; text-align:center; }
+.opt-item .opt-text { flex: 1; }
+.opt-item .opt-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.opt-item .opt-note { font-size: 11px; color: var(--warm-gray); margin-top: 2px; }
+.opt-item .opt-arrow { font-size: 13px; color: var(--mid); transition: transform .18s; }
+.opt-item:hover .opt-arrow { transform: translateX(3px); color: var(--accent); }
+
+.q-nav { display:flex; justify-content:space-between; align-items:center; margin-top: 1.6rem; }
+.q-back { font-size: 12px; color: var(--warm-gray); background:none; border:none; cursor:pointer; padding: 6px 4px; }
+.q-back:hover { color: var(--accent); }
+.q-skip { font-size: 12px; color: var(--warm-gray); background:none; border: .5px solid var(--mid); border-radius: 20px; cursor:pointer; padding: 8px 16px; }
+.q-skip:hover { border-color: var(--accent-light); color: var(--accent); }
+
+/* ── 인트로 ── */
+.intro-badges { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin: 1.4rem 0 1.8rem; }
+.badge {
+  display:inline-flex; align-items:center; gap:5px; font-size: 11px; color: var(--text-sub);
+  background: var(--warm-white); border: .5px solid var(--stone); border-radius: 20px; padding: 6px 13px;
+}
+.btn-start {
+  width: 100%; padding: 15px; border-radius: 14px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #fff;
+  font-size: 15px; font-weight: 500; font-family: inherit; letter-spacing: .02em;
+  box-shadow: 0 8px 20px rgba(176,123,90,.25); transition: transform .15s, box-shadow .15s;
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(176,123,90,.32); }
+.link-skip-all {
+  display:block; text-align:center; margin-top: 14px; font-size: 12px; color: var(--warm-gray);
+  text-decoration: none;
+}
+.link-skip-all:hover { color: var(--accent); text-decoration: underline; }
+
+/* ── 결과 화면 ── */
+.result-head { text-align:center; margin-bottom: 1.4rem; }
+.result-title { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 26px; color: var(--text); margin-bottom: 6px; }
+.result-sub { font-size: 12px; color: var(--warm-gray); }
+
+.policy-strip {
+  display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+  background: var(--gold-pale); border: .5px solid var(--gold-light); border-radius: 14px;
+  padding: 12px 14px; margin: 1.2rem 0 1.6rem; cursor: pointer;
+}
+.policy-chip { font-size: 11px; color: #8a6d1f; font-weight:500; }
+.policy-detail {
+  display:none; font-size: 11px; color: #8a6d1f; line-height: 1.9; text-align:left;
+  background: var(--gold-pale); border: .5px solid var(--gold-light); border-top:none;
+  border-radius: 0 0 14px 14px; padding: 0 16px 14px; margin: -1.6rem 0 1.6rem;
+}
+.policy-detail.open { display:block; }
+
+.rec-card {
+  background:#fff; border:.5px solid var(--stone); border-radius: 20px; padding: 1.5rem;
+  margin-bottom: 14px; box-shadow: 0 4px 18px rgba(0,0,0,.04); animation: fadeUp .5s ease both;
+  cursor:pointer; transition: transform .18s, box-shadow .18s;
+}
+.rec-card:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(176,123,90,.14); }
+.rec-card:nth-child(1){animation-delay:.05s;} .rec-card:nth-child(2){animation-delay:.15s;} .rec-card:nth-child(3){animation-delay:.25s;}
+.rec-top { display:flex; align-items:center; gap:10px; margin-bottom: 8px; }
+.rec-rank {
+  width: 22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:600; color:#fff; flex-shrink:0;
+}
+.rec-emoji { font-size: 22px; }
+.rec-name { font-size: 16px; font-weight: 500; color: var(--text); flex:1; }
+.rec-price { font-size: 13px; font-weight: 600; }
+.rec-reason {
+  font-size: 12px; color: var(--text-sub); line-height: 1.7; padding: 10px 12px;
+  background: var(--warm-white); border-radius: 10px; border-left: 2px solid; margin-bottom: 12px;
+}
+.rec-btn {
+  width:100%; padding: 11px; border-radius: 10px; border: none; cursor:pointer;
+  color:#fff; font-size: 13px; font-weight: 500; font-family: inherit; transition: opacity .15s;
+}
+.rec-btn:hover { opacity:.87; }
+
+.result-foot { text-align:center; margin-top: 1.6rem; }
+.result-foot a { font-size: 12px; color: var(--warm-gray); text-decoration:none; }
+.result-foot a:hover { color: var(--accent); text-decoration: underline; }
+
+.empty-note { font-size:12px; color:var(--warm-gray); text-align:center; padding: 1rem 0; line-height:1.8; }
+
+/* ── 다중선택 / 체크박스 / 입력창 ── */
+.opt-item.selected { border-color: var(--accent); background: var(--gold-pale); }
+.opt-check {
+  width:18px; height:18px; border-radius:5px; border:1.5px solid var(--mid); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; transition:all .15s;
+}
+.opt-item.selected .opt-check { background: var(--accent); border-color: var(--accent); }
+
+/* '잘 모르겠어요' / '특이사항 없음'처럼 나머지와 성격이 다른 항목을 연한 바이올렛으로 살짝 구분 */
+.opt-item-muted {
+  border-color: #cdbfe0; background: #f5f1fa;
+}
+.opt-item-muted .opt-name { color: #6b5b8a; font-weight: 500; }
+.opt-item-muted .opt-note { color: #a89bc2; }
+.opt-item-muted .opt-check { border-color: #cdbfe0; }
+.opt-item-muted.selected { border-color: #a893c2; background: #ece3f4; }
+.opt-item-muted.selected .opt-check { background: #a893c2; border-color: #a893c2; }
+.btn-next {
+  padding: 13px 22px; border-radius: 14px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #fff;
+  font-size: 14px; font-weight: 500; font-family: inherit; letter-spacing: .02em;
+  box-shadow: 0 6px 16px rgba(176,123,90,.22); transition: all .15s;
+}
+.btn-next:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(176,123,90,.3); }
+.btn-next:disabled { opacity:.35; cursor:default; box-shadow:none; }
+.note-textarea {
+  width:100%; padding:12px 14px; border:.5px solid var(--stone); border-radius:12px;
+  font-family:inherit; font-size:13px; color:var(--text); background:var(--cream);
+  resize:vertical; min-height:56px; margin-top:6px;
+}
+.note-textarea:focus { outline:none; border-color:var(--accent-light); }
+.note-label { font-size:12px; color:var(--text-sub); margin-top:1.2rem; margin-bottom:2px; display:block; }
+.consult-note {
+  font-size:11.5px; color:var(--text-sub); background:var(--warm-white); border-radius:12px;
+  padding:11px 13px; line-height:1.75; margin-top:14px; text-align:left; border-left:2px solid var(--gold);
+}
+.special-note {
+  font-size:12px; color:#8a5a3a; background:#fdf0e6; border:.5px solid #f0d0b8; border-radius:12px;
+  padding:12px 14px; line-height:1.8; margin-bottom:14px; text-align:left;
+}
+
+/* ── 상단 고정 배지 / 전체메뉴 링크 ── */
+.top-badges { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin: 1rem 0 1.6rem; }
+.top-link-all {
+  display:block; text-align:center; margin: -0.8rem 0 1.6rem; font-size: 12px; color: var(--warm-gray);
+  text-decoration: none;
+}
+.top-link-all:hover { color: var(--accent); text-decoration: underline; }
+.q-skip-link {
+  display:inline-block; font-size: 12px; color: var(--warm-gray); background:none; border:none;
+  cursor:pointer; text-decoration: underline; padding: 6px 4px;
+}
+.q-skip-link:hover { color: var(--accent); }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+</style>
+</head>
+<body>
+
+<!-- 구글 번역 -->
+<div id="google_translate_element" style="position:fixed;top:12px;right:12px;z-index:9999;"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ko',
+    includedLanguages: 'en,ja,zh-CN,zh-TW,fr,de,es,ru,vi,th,ar,tr',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-eyebrow">Find Your Care</div>
+    <div class="brand-title">나에게 맞는 케어,<br>찾아드릴게요</div>
+    <div class="brand-sub">질문 몇 가지면 충분해요 · 1분이면 끝나요</div>
+  </div>
+
+  <div class="top-badges">
+    <span class="badge">🚺 여성전용 · 남성은 동반 시 가능</span>
+    <span class="badge">💳 예약금 5만원</span>
+  </div>
+  <a class="top-link-all" href="index.html">이미 원하는 케어가 있어요, 전체 메뉴 바로 보기 →</a>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-dot active" data-step="0"></div>
+    <div class="progress-dot" data-step="1"></div>
+    <div class="progress-dot" data-step="2"></div>
+    <div class="progress-dot" data-step="3"></div>
+    <div class="progress-dot" data-step="4"></div>
+  </div>
+
+  <!-- STAGE 0: Q1 부위 (복수선택) -->
+  <div class="stage active" id="stage0">
+    <div class="q-card">
+      <div class="q-eyebrow">Question 1</div>
+      <div class="q-title">어떤 부위를<br>케어하고 싶으신가요?</div>
+      <div class="q-desc">해당하는 부위를 모두 골라주세요 (복수 선택 가능)</div>
+      <div class="opt-list" id="areaList"></div>
+      <div class="q-nav" style="justify-content:flex-end;">
+        <button class="btn-next" id="areaNextBtn" onclick="goTo(1)" disabled>다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 1: Q2 고민 (복수선택) -->
+  <div class="stage" id="stage1">
+    <div class="q-card">
+      <div class="q-eyebrow">Question 2</div>
+      <div class="q-title">지금 가장 신경 쓰이는 것을<br>골라주세요</div>
+      <div class="q-desc">해당하는 고민을 모두 골라주세요 (복수 선택 가능)</div>
+      <div class="opt-list" id="concernList"></div>
+      <div class="q-nav">
+        <button class="q-back" onclick="goTo(0)">← 이전</button>
+        <button class="btn-next" id="concernNextBtn" onclick="goTo(2)" disabled>다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 2: Q3 희망 소요시간 (복수선택) -->
+  <div class="stage" id="stage2">
+    <div class="q-card">
+      <div class="q-eyebrow">Question 3</div>
+      <div class="q-title">희망하시는<br>소요 시간이 있으신가요?</div>
+      <div class="q-desc">해당하는 시간을 모두 골라주세요 (선택하지 않아도 괜찮아요)</div>
+      <div class="opt-list" id="durationList"></div>
+      <div class="q-nav">
+        <button class="q-back" onclick="goTo(1)">← 이전</button>
+        <button class="btn-next" onclick="goTo(3)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 3: 특이사항 (선택) -->
+  <div class="stage" id="stage3">
+    <div class="q-card">
+      <div class="q-eyebrow">Optional</div>
+      <div class="q-title">참고할 특이사항이<br>있으신가요?</div>
+      <div class="q-desc">해당하시면 체크해주세요. 안전한 케어를 위해 꼭 필요한 정보예요</div>
+      <div class="opt-list" id="specialList"></div>
+      <label class="note-label">질병 · 복약 사항 (있으시면 적어주세요)</label>
+      <textarea class="note-textarea" id="noteInput" placeholder="예: 고혈압약 복용 중, 알레르기 있음 등"></textarea>
+      <div class="q-nav">
+        <button class="q-back" onclick="goTo(2)">← 이전</button>
+        <button class="btn-next" onclick="submitSpecial()">추천받기 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 4: 결과 -->
+  <div class="stage" id="stage4">
+    <div class="result-head">
+      <div class="result-title">이런 케어는 어떠세요?</div>
+      <div class="result-sub" id="resultSub">고객님을 위해 골라봤어요</div>
+    </div>
+
+    <div id="specialNoteWrap"></div>
+
+    <div class="policy-strip" onclick="togglePolicy()">
+      <span class="policy-chip">🚺 여성전용 (커플 동반 가능)</span>
+      <span class="policy-chip">💳 예약금 5만원</span>
+      <span class="policy-chip">✕ 당일취소 환불불가</span>
+      <span class="policy-chip" style="opacity:.6;">자세히 보기 ▾</span>
+    </div>
+    <div class="policy-detail" id="policyDetail">
+      · 리본스파에스테틱은 여성 중심 웰니스 공간으로, 남성 고객은 여성 파트너와 동반 방문 시에만 예약 가능합니다.<br>
+      · 예약금(1인당 5만원 또는 $40 USD) 결제 완료 후 예약이 확정되며, 당일 취소 시 환불되지 않습니다.<br>
+      · 1인 예약만 가능하며, 2인 이상은 이메일(<a href="mailto:reborncolorteacher@gmail.com" style="color:inherit;text-decoration:underline;">reborncolorteacher@gmail.com</a>) 혹은 <a href="https://pf.kakao.com/_xifxlpxl" target="_blank" style="color:inherit;text-decoration:underline;">카카오톡채널(pf.kakao.com/_xifxlpxl)</a>로 문의해주세요.<br>
+      · 예약금이 3시간 이내 미입금 시 자동 취소됩니다. 30분 이상 지각 시 노쇼로 처리됩니다.
+    </div>
+
+    <div id="recList"></div>
+
+    <div class="consult-note">
+      💬 당일 상담 후 피부와 컨디션에 따라 프로그램 변경, 추가도 가능합니다.
+    </div>
+
+    <div class="result-foot">
+      <a href="#" onclick="restart(); return false;">↺ 다시 추천받기</a> &nbsp;·&nbsp;
+      <a href="index.html">전체 메뉴 보기</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ───────────────────────────────────────────
+   추천 카탈로그
+   각 항목은 실제 예약 페이지의 메뉴 key와 그대로 연결됩니다.
+   file#key 형태로 이동하면 해당 페이지가 자동으로 예약 모달을 엽니다.
+   durationHours: 1 / 2 / 3 / 4(=4시간 이상) 중 근사치로 매핑
+─────────────────────────────────────────── */
+const CATALOG = [
+  { file:'purpose_booking.html', key:'relax', emoji:'🌊', name:'Relax — 이완 트리트먼트', price:'450,000 ₩', priceNum:450000, color:'#5B8DB8',
+    area:['body','mind'], concern:['relax'], durationHours:[2],
+    reason:"몸과 마음의 긴장을 풀고 깊은 이완을 원하신다면 잘 맞아요." },
+  { file:'purpose_booking.html', key:'innerpeace', emoji:'🔮', name:"Inner Peace — 내적평안 스페셜케어", price:'330,000 ₩~', priceNum:330000, color:'#8B6BAE',
+    area:['face','mind'], concern:['lift','detox','tone'], durationHours:[2],
+    reason:"컬러테라피·24k골드·고강도 리프팅 중 골라 얼굴 톤과 탄력을 함께 잡아줘요." },
+  { file:'purpose_booking.html', key:'balance', emoji:'🌿', name:"Balance — 균형 트리트먼트", price:'230,000 ₩~', priceNum:230000, color:'#4A9E8A',
+    area:['body'], concern:['swelling','fatigue'], durationHours:[2],
+    reason:"단전 밸런스와 순환 케어로 몸 전체의 균형을 잡아드려요." },
+  { file:'purpose_booking.html', key:'clean', emoji:'✨', name:"Clean — 깨끗함", price:'370,000 ₩~', priceNum:370000, color:'#B07B5A',
+    area:['body'], concern:['detox'], durationHours:[2],
+    reason:"바디스크럽과 리본스파 입욕으로 극강의 개운함을 원하신다면 추천해요." },
+
+  { file:'feeling_booking.html', key:'happiness', emoji:'🌸', name:'행복 프로그램', price:'440,000 ₩', priceNum:440000, color:'#D4537E',
+    area:['body','mind'], concern:['relax'], durationHours:[2],
+    reason:"전신 신경계 밸런스로 쌓인 스트레스를 편안하게 풀어드려요." },
+  { file:'feeling_booking.html', key:'love', emoji:'💜', name:'사랑 프로그램', price:'350,000 ₩', priceNum:350000, color:'#7B6FD0',
+    area:['body','mind'], concern:['hormone','tone'], durationHours:[2],
+    reason:"복부와 호르몬 밸런스를 잡아 속부터 맑게 빛나는 피부를 만들어줘요." },
+  { file:'feeling_booking.html', key:'hope', emoji:'🌿', name:'희망 프로그램', price:'450,000 ₩', priceNum:450000, color:'#2BA87A',
+    area:['body','mind'], concern:['lift','fatigue'], durationHours:[2],
+    reason:"만성피로와 탄력 저하를 동시에 케어하는 안티에이징 프로그램이에요." },
+  { file:'feeling_booking.html', key:'gift', emoji:'🎁', name:'선물 프로그램', price:'800,000 ₩', priceNum:800000, color:'#C27B1A',
+    area:['body','mind'], concern:['relax','lift','swelling'], durationHours:[3],
+    reason:"여러 고민을 한 번에, 제대로 시간 내서 받는 프리미엄 토탈 케어예요." },
+
+  { file:'big5_booking.html', key:'faceFoot', emoji:'🦶', name:'Face + Foot', price:'280,000 ₩', priceNum:280000, color:'#4a7fa5',
+    area:['face','foot'], concern:['swelling','fatigue'], durationHours:[2],
+    reason:"얼굴 부기와 발·종아리 피로를 함께 가볍게 풀어줘요." },
+  { file:'big5_booking.html', key:'backFaceFoot', emoji:'🌊', name:'Back + Face + Foot', price:'330,000 ₩', priceNum:330000, color:'#7a5ea5',
+    area:['body','face','foot'], concern:['fatigue','swelling'], durationHours:[2],
+    reason:"등·어깨부터 얼굴, 발까지 온몸의 피로를 순환으로 풀어드려요." },
+  { file:'big5_booking.html', key:'hope', emoji:'🌿', name:'Hope', price:'450,000 ₩', priceNum:450000, color:'#2BA87A',
+    area:['body','scalp'], concern:['fatigue','lift'], durationHours:[2],
+    reason:"두피부터 등, 발까지 몸과 마음을 새롭게 리셋해줘요." },
+  { file:'big5_booking.html', key:'harmony', emoji:'✨', name:'Harmony', price:'350,000 ₩', priceNum:350000, color:'#c07840',
+    area:['body'], concern:['tone','relax'], durationHours:[2],
+    reason:"바디와 피부의 유수분 균형을 함께 맞춰주는 토탈 밸런스 케어예요." },
+  { file:'big5_booking.html', key:'faceScalp', emoji:'💆', name:'Face + Scalp', price:'305,000 ₩', priceNum:305000, color:'#b05a8a',
+    area:['face','scalp'], concern:['lift','detox'], durationHours:[2],
+    reason:"두피 디톡스와 얼굴 리프팅을 함께, 머리부터 맑아지는 케어예요." },
+
+  { file:'reborn_booking.html', key:'perfectbasic', emoji:'🌸', name:"Perfect Basic (Face)", price:'170,000 ₩', priceNum:170000, color:'#C4957A',
+    area:['face'], concern:['tone'], durationHours:[1.5],
+    reason:"부담 없는 가격으로 얼굴 기초 케어를 시작하기 좋아요." },
+  { file:'reborn_booking.html', key:'lifting', emoji:'✨', name:"Balance + Lifting (Face)", price:'180,000 ₩', priceNum:180000, color:'#8B6BAE',
+    area:['face'], concern:['lift'], durationHours:[1.5],
+    reason:"윤곽 리프팅과 고농축 영양 트리트먼트로 탄력이 걱정될 때 잘 맞아요." },
+  { file:'reborn_booking.html', key:'renewal', emoji:'⏳', name:"Renewal (Special)", price:'300,000 ₩', priceNum:300000, color:'#C06080',
+    area:['face'], concern:['lift','fatigue'], durationHours:[1.5,2],
+    reason:"피부 조직 개선과 콜라겐 합성으로 확실한 탄력 케어를 원하신다면요." },
+  { file:'reborn_booking.html', key:'scrub', emoji:'🌿', name:"Full Body Scrub", price:'215,000 ₩', priceNum:215000, color:'#4A9E8A',
+    area:['body'], concern:['detox'], durationHours:[2],
+    reason:"묵은 각질과 노폐물을 정리하는 개운한 바디 디톡스예요." },
+  { file:'reborn_booking.html', key:'body_balance', emoji:'🌊', name:"Balance Massage", price:'260,000 ₩', priceNum:260000, color:'#4A9E8A',
+    area:['body','mind'], concern:['relax','swelling'], durationHours:[2],
+    reason:"긴장을 풀면서 순환까지 챙기는 바디 밸런스 마사지예요." },
+  { file:'reborn_booking.html', key:'hormone', emoji:'🌙', name:"Hormone Massage", price:'450,000 ₩', priceNum:450000, color:'#4A9E8A',
+    area:['body','mind'], concern:['hormone'], durationHours:[3],
+    reason:"호르몬 밸런스가 걱정이라면 이 케어가 가장 잘 맞아요." },
+
+  { file:'special_booking.html', key:'infant_spa', emoji:'🛁', name:'Spa & Oil Touch (유아)', price:'90,000 ₩', priceNum:90000, color:'#E8709A',
+    area:['infant'], concern:[], durationHours:[1.5],
+    reason:"따뜻한 스파와 오일 터치로 아기의 피부와 신경계를 부드럽게 케어해요." },
+  { file:'special_booking.html', key:'child_normal', emoji:'🌱', name:'맞춤 성장케어 (어린이)', price:'160,000 ₩', priceNum:160000, color:'#E8835A',
+    area:['infant'], concern:[], durationHours:[1.5],
+    reason:"성장기 어린이를 위한 맞춤 케어예요." },
+  { file:'special_booking.html', key:'prenatal_balance', emoji:'🌿', name:'Balance Oil Covering (임산부)', price:'250,000 ₩', priceNum:250000, color:'#C97B5A',
+    area:['prenatal'], concern:[], durationHours:[1.5],
+    reason:"임신 12~24주 임산부를 위한 안전한 밸런스 케어예요." },
+  { file:'special_booking.html', key:'prenatal_soft', emoji:'🤍', name:'Soft Oil Touch (임산부)', price:'190,000 ₩', priceNum:190000, color:'#C97B5A',
+    area:['prenatal'], concern:[], durationHours:[1.5],
+    reason:"페이스를 제외한 부드러운 오일 터치로 초기 임산부도 편안하게 받을 수 있어요." },
+  { file:'special_booking.html', key:'singing_bowl', emoji:'🔔', name:'싱잉볼 & 코어밸런스', price:'280,000 ₩', priceNum:280000, color:'#B05A3A',
+    area:['body','mind'], concern:['relax'], durationHours:[1.5],
+    reason:"싱잉볼의 울림으로 깊은 이완을 경험하고 싶다면 추천해요." },
+];
+
+// 임산부/영유아 전용 카테고리 (특이사항에서 체크 시 우선 안내)
+const PRENATAL_ITEMS = CATALOG.filter(it => it.area.includes('prenatal'));
+const INFANT_ITEMS   = CATALOG.filter(it => it.area.includes('infant'));
+// 일반 추천 흐름에서는 임산부/영유아 전용 항목을 제외합니다.
+// (특이사항에서 직접 체크한 경우에만 위 두 목록으로 안내합니다)
+const GENERAL_CATALOG = CATALOG.filter(it => !it.area.includes('prenatal') && !it.area.includes('infant'));
+
+const AREAS = [
+  { key:'face',       emoji:'🌸', name:'얼굴',            note:'톤·탄력·리프팅' },
+  { key:'body',        emoji:'🌊', name:'바디 전체',        note:'순환·이완·밸런스' },
+  { key:'scalp_foot',  emoji:'🦶', name:'두피 · 발/종아리',  note:'가볍게 부분 케어' },
+  { key:'mind',        emoji:'🍃', name:'마음',            note:'스트레스·긴장 완화' },
+];
+
+const CONCERNS = [
+  { key:'lift',     emoji:'📐', name:'탄력 저하',           note:'리프팅이 필요해요' },
+  { key:'tone',     emoji:'🌤️', name:'칙칙함과 톤개선',      note:'맑고 화사한 피부' },
+  { key:'swelling', emoji:'💧', name:'붓기와 순환',          note:'가볍고 산뜻하게' },
+  { key:'relax',    emoji:'🍃', name:'스트레스 긴장 완화',   note:'깊은 휴식이 필요해요' },
+  { key:'detox',    emoji:'✨', name:'디톡스',              note:'개운하게 리셋하고 싶어요' },
+  { key:'hormone',  emoji:'🌙', name:'호르몬 밸런스',        note:'속부터 편안하게' },
+  { key:'unknown',  emoji:'🤔', name:'잘 모르겠어요',        note:'추천 케어로 안내해드릴게요', muted:true },
+];
+
+const DURATIONS = [
+  { key:1.5, emoji:'⏱️', name:'90분',       note:'가볍게 즐기는 부분 케어' },
+  { key:2,   emoji:'⏱️', name:'2시간',      note:'가장 기본적인 구성' },
+  { key:3,   emoji:'⏱️', name:'3시간 이상', note:'제대로 시간 내서' },
+];
+
+const SPECIAL_OPTS = [
+  { key:'pregnant', emoji:'🤰', name:'임산부',       note:'임신 중이시라면 체크해주세요' },
+  { key:'infant',   emoji:'👶', name:'영유아',       note:'영유아 · 어린이 케어라면 체크해주세요' },
+  { key:'none',     emoji:'🙅', name:'특이사항 없음', note:'해당 사항이 없으시면 체크해주세요', muted:true },
+];
+
+const AREA_TAG_MAP = {
+  face: ['face'],
+  body: ['body'],
+  scalp_foot: ['scalp','foot'],
+  mind: ['mind'],
+};
+
+let state = { areas: [], concerns: [], durations: [], pregnant: false, infant: false, none: false, note: '' };
+
+function renderOptionList(container, items, isSelected, onClick) {
+  const el = document.getElementById(container);
+  el.innerHTML = '';
+  items.forEach(it => {
+    const div = document.createElement('div');
+    div.className = 'opt-item'
+      + (it.muted ? ' opt-item-muted' : '')
+      + (isSelected(it.key) ? ' selected' : '');
+    div.innerHTML = `<div class="opt-check">${isSelected(it.key) ? '✓' : ''}</div>
+      <div class="opt-text"><div class="opt-name">${it.name}</div><div class="opt-note">${it.note}</div></div>`;
+    div.onclick = () => onClick(it.key);
+    el.appendChild(div);
+  });
+}
+
+function renderAreaList() {
+  renderOptionList('areaList', AREAS, k => state.areas.includes(k), toggleArea);
+  document.getElementById('areaNextBtn').disabled = state.areas.length === 0;
+}
+function renderConcernList() {
+  renderOptionList('concernList', CONCERNS, k => state.concerns.includes(k), toggleConcern);
+  document.getElementById('concernNextBtn').disabled = state.concerns.length === 0;
+}
+function renderDurationList() {
+  renderOptionList('durationList', DURATIONS, k => state.durations.includes(k), toggleDuration);
+}
+function renderSpecialList() {
+  renderOptionList('specialList', SPECIAL_OPTS, k => state[k], toggleSpecial);
+}
+
+function toggleInArray(arr, key) {
+  const i = arr.indexOf(key);
+  if (i === -1) arr.push(key); else arr.splice(i, 1);
+}
+
+function toggleArea(key) { toggleInArray(state.areas, key); renderAreaList(); }
+
+function toggleConcern(key) {
+  if (key === 'unknown') {
+    state.concerns = state.concerns.includes('unknown') ? [] : ['unknown'];
+  } else {
+    toggleInArray(state.concerns, key);
+    state.concerns = state.concerns.filter(k => k !== 'unknown');
+  }
+  renderConcernList();
+}
+
+function toggleDuration(key) { toggleInArray(state.durations, key); renderDurationList(); }
+
+function toggleSpecial(key) {
+  if (key === 'none') {
+    state.none = !state.none;
+    if (state.none) {
+      state.pregnant = false;
+      state.infant = false;
+      state.note = '';
+      document.getElementById('noteInput').value = '';
+    }
+  } else {
+    state[key] = !state[key];
+    if (state[key]) state.none = false;
+  }
+  renderSpecialList();
+}
+
+document.getElementById('noteInput').addEventListener('input', function () {
+  if (this.value.trim() !== '' && state.none) {
+    state.none = false;
+    renderSpecialList();
+  }
+});
+
+renderAreaList();
+renderConcernList();
+renderDurationList();
+renderSpecialList();
+
+function goTo(step) {
+  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+  document.getElementById('stage' + step).classList.add('active');
+  document.querySelectorAll('.progress-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === step);
+    d.classList.toggle('done', i < step);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function submitSpecial() {
+  state.note = document.getElementById('noteInput').value.trim();
+  showResult();
+}
+
+function restart() {
+  state = { areas: [], concerns: [], durations: [], pregnant: false, infant: false, none: false, note: '' };
+  document.getElementById('noteInput').value = '';
+  renderAreaList();
+  renderConcernList();
+  renderDurationList();
+  renderSpecialList();
+  goTo(0);
+}
+
+function togglePolicy() {
+  document.getElementById('policyDetail').classList.toggle('open');
+}
+
+function durationLabel(hours) {
+  const arr = Array.isArray(hours) ? hours : [hours];
+  const toStr = h => h >= 3 ? '3시간 이상' : (h === 1.5 ? '90분' : h + '시간');
+  if (arr.length === 1) return toStr(arr[0]);
+  return arr.map(toStr).join('~');
+}
+
+// 프로그램의 소요시간 범위(durationHours, 배열)와 선택한 시간대가 하나라도 겹치는지 확인
+function itemMatchesDuration(item, selected) {
+  if (!selected || selected.length === 0) return true;
+  return item.durationHours.some(h => selected.includes(h));
+}
+
+function scoreItem(item) {
+  let s = 0;
+  state.areas.forEach(a => {
+    const tags = AREA_TAG_MAP[a] || [];
+    if (item.area.some(t => tags.includes(t))) s += 2;
+  });
+  state.concerns.forEach(c => {
+    if (item.concern.includes(c)) s += 3;
+  });
+  return s;
+}
+
+const POPULAR_FALLBACK = ['relax@purpose_booking.html', 'faceFoot@big5_booking.html', 'perfectbasic@reborn_booking.html'];
+
+function pickTop3(pool) {
+  return pool
+    .map(it => ({ item: it, s: scoreItem(it) }))
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 3)
+    .map(x => x.item);
+}
+
+function showResult() {
+  // 임산부 또는 영유아 체크 시 전문 케어를 우선 안내
+  if (state.pregnant || state.infant) {
+    let pool = [];
+    if (state.pregnant) pool = pool.concat(PRENATAL_ITEMS);
+    if (state.infant) pool = pool.concat(INFANT_ITEMS);
+    renderRecommendations(pool.slice(0, 3), { isSpecialCase: true });
+    goTo(4);
+    return;
+  }
+
+  // 1) 희망 소요시간을 먼저 하드 필터로 적용합니다.
+  //    (시간이 안 맞는 프로그램이 상위로 올라오는 걸 막기 위해)
+  const durationMatch = state.durations.length > 0
+    ? GENERAL_CATALOG.filter(it => itemMatchesDuration(it, state.durations))
+    : GENERAL_CATALOG;
+
+  let top3 = pickTop3(durationMatch.filter(it => scoreItem(it) > 0));
+  let outsideDuration = false;
+
+  // 2) 시간 조건 안에서 3개가 안 채워지면, 같은 시간대 안에서 점수 0인 것도 채웁니다.
+  if (top3.length < 3 && durationMatch.length > top3.length) {
+    const rest = durationMatch.filter(it => !top3.includes(it));
+    top3 = top3.concat(rest).slice(0, 3);
+  }
+
+  // 3) 그래도 3개가 안 되면(선택한 시간대 프로그램이 아예 부족한 경우) 시간 조건을 풀고 채웁니다.
+  //    이때는 "다른 소요시간" 배지로 명확히 표시합니다.
+  if (top3.length < 3 && state.durations.length > 0) {
+    outsideDuration = true;
+    const wider = pickTop3(GENERAL_CATALOG.filter(it => scoreItem(it) > 0 && !top3.includes(it)));
+    top3 = top3.concat(wider).slice(0, 3);
+  }
+
+  if (top3.length < 3) {
+    const fallback = POPULAR_FALLBACK
+      .map(fk => { const [key, file] = fk.split('@'); return CATALOG.find(c => c.key === key && c.file === file); })
+      .filter(Boolean)
+      .filter(f => !top3.includes(f));
+    top3 = top3.concat(fallback).slice(0, 3);
+  }
+  renderRecommendations(top3, { outsideDuration });
+  goTo(4);
+}
+
+function renderRecommendations(items, opts) {
+  opts = opts || {};
+  const wrap = document.getElementById('recList');
+  wrap.innerHTML = '';
+  document.getElementById('resultSub').textContent = opts.isSpecialCase
+    ? '전문 케어가 필요한 분들을 위한 프로그램이에요'
+    : '고객님을 위해 골라봤어요';
+
+  const specialWrap = document.getElementById('specialNoteWrap');
+  specialWrap.innerHTML = '';
+  if (opts.isSpecialCase) {
+    const who = [state.pregnant ? '임산부' : null, state.infant ? '영유아' : null].filter(Boolean).join(' · ');
+    specialWrap.innerHTML = `<div class="special-note">🤰 <strong>${who}</strong>로 체크해주셨어요. 안전을 위해 전문 케어만 추천해드리며, 현장 상담 시 정확한 주수·연령 등을 다시 확인합니다.</div>`;
+  }
+  if (state.note) {
+    specialWrap.innerHTML += `<div class="special-note">📝 남겨주신 질병·복약 사항: <strong>${state.note}</strong><br>예약 시 담당자에게 꼭 전달해드릴게요.</div>`;
+  }
+  if (opts.outsideDuration) {
+    const wanted = state.durations.map(durationLabel).join(' · ');
+    specialWrap.innerHTML += `<div class="special-note">⏱ 희망하신 <strong>${wanted}</strong> 프로그램이 부족해서, 다른 소요시간대의 케어도 함께 보여드려요. 각 카드의 소요시간을 확인해주세요.</div>`;
+  }
+
+  if (items.length === 0) {
+    wrap.innerHTML = '<div class="empty-note">딱 맞는 케어를 찾지 못했어요.<br>전체 메뉴에서 천천히 둘러봐 주세요, 또는 상담 시 안내해드릴게요 🙏</div>';
+    return;
+  }
+
+  items.forEach((it, idx) => {
+    const matchesDuration = itemMatchesDuration(it, state.durations);
+    const durChip = it.durationHours
+      ? `<span style="font-size:10.5px; color:${matchesDuration ? '#8a7360' : '#b0603a'}; background:${matchesDuration ? 'var(--warm-white)' : '#fdf0e6'}; border-radius:10px; padding:3px 9px; margin-left:6px;">⏱ ${durationLabel(it.durationHours)}${matchesDuration ? '' : ' · 다른 시간대'}</span>`
+      : '';
+    const card = document.createElement('div');
+    card.className = 'rec-card';
+    card.onclick = () => { location.href = `index.html#openBooking=${it.file}&key=${it.key}`; };
+    card.innerHTML = `
+      <div class="rec-top">
+        <div class="rec-rank" style="background:${it.color}">${idx + 1}</div>
+        <div class="rec-emoji">${it.emoji}</div>
+        <div class="rec-name">${it.name}</div>
+        ${durChip}
+      </div>
+      <div class="rec-reason" style="border-color:${it.color}">${it.reason}</div>
+      <div class="rec-price" style="color:${it.color}; margin-bottom:10px;">${it.price}</div>
+      <button class="rec-btn" style="background:${it.color};" onclick="event.stopPropagation(); location.href='index.html#openBooking=${it.file}&key=${it.key}'">예약하러 가기 →</button>`;
+    wrap.appendChild(card);
+  });
+}
+</script>
+
+</body>
+</html>
