@@ -443,19 +443,6 @@ function googleTranslateElementInit() {
       <div class="ind" id="ind3"><div class="ind-dot">3</div><span>예약 완료</span></div>
     </div>
 
-    <div class="form-section">
-      <label class="form-label">고객 이름</label>
-      <input class="form-input" id="inputName" placeholder="홍길동" type="text">
-    </div>
-    <div class="form-section">
-      <label class="form-label">연락처</label>
-      <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
-    </div>
-    <div class="form-section">
-      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
-      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
-    </div>
-
     <!-- 옵션 선택 -->
     <div id="optionSection" style="display:none;">
       <div class="option-section">
@@ -481,6 +468,19 @@ function googleTranslateElementInit() {
       <label class="form-label">예약 시간 <span id="dateLabel" style="color:#bbb;font-weight:400;"></span></label>
       <div id="slotsWrap"><div class="slots-loading">날짜를 먼저 선택해주세요</div></div>
     </div>
+    <div class="form-section">
+      <label class="form-label">고객 이름</label>
+      <input class="form-input" id="inputName" placeholder="홍길동" type="text">
+    </div>
+    <div class="form-section">
+      <label class="form-label">연락처</label>
+      <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
+    </div>
+    <div class="form-section">
+      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
+      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
+    </div>
+
 
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">취소</button>
@@ -496,6 +496,11 @@ function googleTranslateElementInit() {
     <div class="pay-title">결제를 진행할까요?</div>
     <div class="pay-subtitle">아래 예약 내용을 최종 확인해주세요</div>
     <div class="pay-receipt" id="payReceipt"></div>
+    <div style="background:#fdf6ee;border:.5px solid #f0e4d4;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#8a7360;line-height:1.8;text-align:left;">
+      · 1인 예약만 가능해요. 2인 이상은 이메일(<a href="mailto:reborncolorteacher@gmail.com" style="color:inherit;text-decoration:underline;">reborncolorteacher@gmail.com</a>) 혹은 <a href="https://pf.kakao.com/_xifxlpxl" target="_blank" style="color:inherit;text-decoration:underline;">카카오톡채널(pf.kakao.com/_xifxlpxl)</a>로 문의해주세요.<br>
+      · 예약금 결제가 <strong>3시간 이내</strong>에 확인되지 않으면 예약이 자동 취소돼요.<br>
+      · <strong>30분 이상 지각</strong> 시에는 노쇼로 처리되어 케어를 받으실 수 없어요.
+    </div>
     <div style="margin:14px 0 6px;font-size:12px;color:#999;">결제 방법을 선택해주세요</div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button id="btnKakao" onclick="confirmPayment('kakao')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#FEE500;color:#3A1D1D;font-size:13px;font-weight:600;cursor:pointer;">💛 카카오페이</button>
@@ -562,6 +567,14 @@ const menus = {
   harmony:     { emoji:'🌺', name:'Harmony Massage', price:'350,000 ₩', priceNum:350000, color:'#4A9E8A', options:null, duration:'2시간', dur:2 },
   hormone:     { emoji:'🌙', name:'Hormone Massage', price:'450,000 ₩', priceNum:450000, color:'#4A9E8A', options:null, duration:'3시간', dur:3 },
 };
+
+// 추천 페이지 등 외부에서 #menuKey 형태로 들어오면 해당 메뉴 예약 모달을 자동으로 엽니다.
+(function(){
+  const key = location.hash.replace('#','');
+  if (key && menus[key]) {
+    window.addEventListener('DOMContentLoaded', () => setTimeout(() => openBooking(key), 100));
+  }
+})();
 
 // ─── 탭 전환 ───
 function switchTab(tab) {
@@ -823,6 +836,7 @@ function showDone(data, name, method='kakao') {
     <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">${method==='kakao'&&!IS_MOBILE?'아래 QR 코드를 휴대폰 카메라로 스캔해 결제해주세요':'결제 페이지가 새 창으로 열렸습니다. 열리지 않았다면 아래 버튼을 눌러주세요 / Please complete your deposit payment below'}</div>
     ${method==='kakao'&&!IS_MOBILE?`<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — 50,000원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`:`<a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>`}
     <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
+    <div style="text-align:center;margin-top:10px;"><a href="reborn_spa_subscribe_landing.html" target="_blank" style="font-size:10px;color:#bbb;text-decoration:underline;">리본스파 소식 받아보기</a></div>
   `; document.getElementById('doneWrap').classList.add('open');
 }
 

@@ -38,6 +38,7 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
 .card-tagline { font-size:12px; color:#888; line-height:1.6; margin-bottom:16px; }
 .steps { margin-bottom:16px; }
 .step { display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-bottom:.5px solid #f0ebe5; font-size:12px; color:#555; line-height:1.55; }
+.step-duration { font-size:10px; color:#bbb; font-weight:400; white-space:nowrap; margin-left:4px; }
 .step:last-child { border-bottom:none; }
 .step-num { font-size:10px; font-weight:600; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; color:#fff; }
 .relax .step-num { background:#5B8DB8; }
@@ -171,9 +172,8 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
 .suboption-item-price { font-size:11px; margin-top:3px; opacity:.85; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);} }
 
-.step-or { display:flex; align-items:center; gap:8px; padding:3px 0; }
-.step-or::before, .step-or::after { content:''; flex:1; height:.5px; background:#e8e2db; }
-.step-or span { font-size:9px; color:#bbb; letter-spacing:.12em; flex-shrink:0; }
+.step-or { display:flex; align-items:center; justify-content:center; padding:3px 0; }
+.step-or span { font-size:9px; font-weight:400; color:#bbb; letter-spacing:.12em; }
 </style>
 </head>
 <body>
@@ -209,13 +209,13 @@ function googleTranslateElementInit() {
       <div class="card-name">이완에 집중된 트리트먼트</div>
       <div class="card-tagline">몸과 정신의 연결통로를 열어<br>진정한 이완을 경험하고 싶을 때</div>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><span>Singing bowl &amp; Collagenful face — 싱잉볼·발·복부·볼륨탄력 유니크페이셜</span></div>
+        <div class="step"><div class="step-num">1</div><span>Singing bowl &amp; Collagenful face — 싱잉볼·발·복부·볼륨탄력 유니크페이셜<span class="step-duration">· 2시간</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">2</div><span>Jam &amp; Chakra balance — 호르몬 잼 특수한 텍스처·케어 후 샤워·얼굴 깊은 터치</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">2</div><span>Jam &amp; Chakra balance — 호르몬 잼 특수한 텍스처·케어 후 샤워·얼굴 깊은 터치<span class="step-duration">· 2시간</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">3</div><span>Flow &amp; Chakra balance — 간단한 얼굴·전체바디·흐름의 정돈·균형감</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">3</div><span>Flow &amp; Chakra balance — 간단한 얼굴·전체바디·흐름의 정돈·균형감<span class="step-duration">· 2시간</span></span></div>
       </div>
       <div class="card-desc relax">싱잉볼을 이용하거나 차크라를 열어서 몸과 정신의 균형을 찾아줍니다. 이로써 신체적, 정신적 교감과 막힘 없는 혈액순환을 위한 트리트먼트입니다.</div>
       <button class="price-btn" onclick="openBooking('relax')">예약하기 — 450,000 ₩</button>
@@ -227,15 +227,15 @@ function googleTranslateElementInit() {
       <div class="card-name">내적평안함을 위한 스페셜케어</div>
       <div class="card-tagline">Upper body · Front<br>내면의 균형과 아름다움을 되찾고 싶을 때</div>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><span>Re'Blansea with color — 컬러테라피와 100% 에센셜 오일로 내외부의 불안정함을 치유</span></div>
+        <div class="step"><div class="step-num">1</div><span>Re'Blansea with color — 컬러테라피와 100% 에센셜 오일로 내외부의 불안정함을 치유<span class="step-duration">· 2시간</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">2</div><span>Re'Gold — 24k 금으로 피부의 시간을 되돌립니다. DNA손상복구·디톡스</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">2</div><span>Re'Gold — 24k 금으로 피부의 시간을 되돌립니다. DNA손상복구·디톡스<span class="step-duration">· 2시간</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">3</div><span>Re'Dona — 여성호르몬 밸런스부터 즉각 도움이 되는 안티에이징 고강도리프팅</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">3</div><span>Re'Dona — 여성호르몬 밸런스부터 즉각 도움이 되는 안티에이징 고강도리프팅<span class="step-duration">· 2시간</span></span></div>
       </div>
-      <div class="card-desc innerpeace">색상의 파장과 에너지 활성의 시너지 효과를 결합하여 내외부의 불안정함을 치유하는 몸과 마음, 피부의 안정을 되찾는 트리트먼트입니다. 생물학적 나이를 회복하고 고강도 리프팅으로 빛나는 피부를 경험하세요.</div>
+      <div class="card-desc innerpeace">컬러테라피와 에너지테라피로 몸과 마음의 균형을 되찾고, 안티에이징 케어로 탄력 있고 빛나는 피부를 만들어주는 트리트먼트입니다.</div>
       <button class="price-btn" onclick="openBooking('innerpeace')">예약하기 — 330,000 ₩~</button>
     </div>
 
@@ -245,15 +245,15 @@ function googleTranslateElementInit() {
       <div class="card-name">균형에 집중된 트리트먼트</div>
       <div class="card-tagline">몸 전체의 균형을 회복하고<br>바디라인과 건강을 함께 개선하고 싶을 때</div>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><span>Core balance &amp; Head touch — 단전의 밸런스와 중심근육 연결통로 순환, 머리 만지기</span></div>
+        <div class="step"><div class="step-num">1</div><span>Core balance &amp; Head touch — 단전의 밸런스와 중심근육 연결통로 순환, 머리 만지기<span class="step-duration">· 2시간</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">2</div><span>Balance &amp; Hydradermie — 가성비 프로그램. 부위별 바디터치와 기기를 결합한 완성도 높은 커스텀 방식</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">2</div><span>Balance &amp; Hydradermie — 가성비 프로그램. 부위별 바디터치와 기기를 결합한 완성도 높은 커스텀 방식<span class="step-duration">· 2시간</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">3</div><span>FB8 &amp; Foot~Calf — 시간이 넉넉하지 않은 분에게 추천하는 얼굴피부, 발, 종아리의 밸런스 케어</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">3</div><span>FB8 &amp; Foot~Calf — 시간이 넉넉하지 않은 분에게 추천하는 얼굴피부, 발, 종아리의 밸런스 케어<span class="step-duration">· 2시간</span></span></div>
       </div>
-      <div class="card-desc balance">동양에서 말하는 단전의 밸런스 그리고 중심근육의 연결통로들의 순환을 원활하게 도모하며 몸 전체의 균형을 적절히 개선합니다. 스트레칭과 필요에 따라 리듬 있고 정교한 터치로 비뚤어지거나 불완전한 통로들이 해소될 수 있도록 전체 밸런스를 개선합니다.</div>
+      <div class="card-desc balance">스트레칭과 손으로 하는 터치 케어로 틀어진 몸의 균형을 바로잡고, 굳어 있는 근육과 순환을 편안하게 풀어주는 트리트먼트입니다.</div>
       <button class="price-btn" onclick="openBooking('balance')">예약하기 — 380,000 ₩~</button>
     </div>
 
@@ -263,12 +263,12 @@ function googleTranslateElementInit() {
       <div class="card-name">깨끗함</div>
       <div class="card-tagline">극강의 깨끗함으로 완성하는<br>바디와 피부의 리셋이 필요할 때</div>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><span>SPA &amp; SCRUB &amp; FACE — 리본스파하기·바디스크럽·얼굴 R / E / B 선택</span></div>
+        <div class="step"><div class="step-num">1</div><span>SPA &amp; SCRUB &amp; FACE — 리본스파하기·바디스크럽·얼굴 R / E / B 선택<span class="step-duration">· 2시간 이상</span></span></div>
         
-        <div class="step-or"><span>OR</span></div>
-        <div class="step"><div class="step-num">2</div><span>SCRUB &amp; SCALP &amp; FACE — 풀바디스크럽·두피케어·얼굴 (유·수분밸런스)</span></div>
+        <div class="step-or"><span>or</span></div>
+        <div class="step"><div class="step-num">2</div><span>SCRUB &amp; SCALP &amp; FACE — 풀바디스크럽·두피케어·얼굴 (유·수분밸런스)<span class="step-duration">· 2시간 이상</span></span></div>
       </div>
-      <div class="card-desc clean">바디스크럽 그리고 샤워 후 에센셜아로마를 이용한 리본스파 입욕으로 극강의 깨끗함을 완성한 후 선택한 얼굴케어를 진행합니다. 단백질과 히알루론산을 채우는 케어부터 고농축 콜라겐을 가득 채우는 안티에이징 케어까지.</div>
+      <div class="card-desc clean">전신 스크럽과 샤워, 아로마 입욕으로 몸을 깨끗하게 정돈한 뒤, 원하는 얼굴 케어로 마무리하는 트리트먼트입니다.</div>
       <button class="price-btn" onclick="openBooking('clean')">예약하기 — 370,000 ₩~</button>
     </div>
 
@@ -307,19 +307,6 @@ function googleTranslateElementInit() {
       <div class="ind" id="ind3"><div class="ind-dot">3</div><span>예약 완료</span></div>
     </div>
 
-    <div class="form-section">
-      <label class="form-label">고객 이름</label>
-      <input class="form-input" id="inputName" placeholder="홍길동" type="text">
-    </div>
-    <div class="form-section">
-      <label class="form-label">연락처</label>
-      <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
-    </div>
-    <div class="form-section">
-      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
-      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
-    </div>
-
     <!-- 옵션 선택 (다중 옵션 메뉴일 때만 표시) -->
     <div id="optionSection" style="display:none;">
       <div class="option-section">
@@ -350,6 +337,19 @@ function googleTranslateElementInit() {
       <label class="form-label">예약 시간 <span id="dateLabel" style="color:#bbb;font-weight:400;"></span></label>
       <div id="slotsWrap"><div class="slots-loading">날짜를 먼저 선택해주세요</div></div>
     </div>
+    <div class="form-section">
+      <label class="form-label">고객 이름</label>
+      <input class="form-input" id="inputName" placeholder="홍길동" type="text">
+    </div>
+    <div class="form-section">
+      <label class="form-label">연락처</label>
+      <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
+    </div>
+    <div class="form-section">
+      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
+      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
+    </div>
+
 
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">취소</button>
@@ -365,6 +365,11 @@ function googleTranslateElementInit() {
     <div class="pay-title">결제를 진행할까요?</div>
     <div class="pay-subtitle">아래 예약 내용을 최종 확인해주세요</div>
     <div class="pay-receipt" id="payReceipt"></div>
+    <div style="background:#fdf6ee;border:.5px solid #f0e4d4;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#8a7360;line-height:1.8;text-align:left;">
+      · 1인 예약만 가능해요. 2인 이상은 이메일(<a href="mailto:reborncolorteacher@gmail.com" style="color:inherit;text-decoration:underline;">reborncolorteacher@gmail.com</a>) 혹은 <a href="https://pf.kakao.com/_xifxlpxl" target="_blank" style="color:inherit;text-decoration:underline;">카카오톡채널(pf.kakao.com/_xifxlpxl)</a>로 문의해주세요.<br>
+      · 예약금 결제가 <strong>3시간 이내</strong>에 확인되지 않으면 예약이 자동 취소돼요.<br>
+      · <strong>30분 이상 지각</strong> 시에는 노쇼로 처리되어 케어를 받으실 수 없어요.
+    </div>
     <div style="margin:14px 0 6px;font-size:12px;color:#999;">결제 방법을 선택해주세요</div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button id="btnKakao" onclick="confirmPayment('kakao')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#FEE500;color:#3A1D1D;font-size:13px;font-weight:600;cursor:pointer;">💛 카카오페이</button>
@@ -419,6 +424,14 @@ window.onload = () => {
   if (!APPS_SCRIPT_URL) document.getElementById('setupBanner').classList.add('show');
   const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth();
 };
+// 추천 페이지 등 외부에서 #menuKey 형태로 들어오면 해당 메뉴 예약 모달을 자동으로 엽니다.
+(function(){
+  const key = location.hash.replace('#','');
+  if (key && menus[key]) {
+    window.addEventListener('DOMContentLoaded', () => setTimeout(() => openBooking(key), 100));
+  }
+})();
+
 
 function setInd(step) {
   [1,2,3].forEach(i => {
@@ -739,6 +752,7 @@ function showDone(data, name, method='kakao') {
     <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">${method==='kakao'&&!IS_MOBILE?'아래 QR 코드를 휴대폰 카메라로 스캔해 결제해주세요':'결제 페이지가 새 창으로 열렸습니다. 열리지 않았다면 아래 버튼을 눌러주세요 / Please complete your deposit payment below'}</div>
     ${method==='kakao'&&!IS_MOBILE?`<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — 50,000원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`:`<a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>`}
     <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
+    <div style="text-align:center;margin-top:10px;"><a href="reborn_spa_subscribe_landing.html" target="_blank" style="font-size:10px;color:#bbb;text-decoration:underline;">리본스파 소식 받아보기</a></div>
   `; document.getElementById('doneWrap').classList.add('open');
 }
 

@@ -27,6 +27,7 @@ body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-s
 .card-category { font-size:11px; letter-spacing:.18em; font-weight:500; }
 .happiness .card-category { color:#D4537E; } .love .card-category { color:#7B6FD0; } .hope .card-category { color:#2BA87A; } .gift .card-category { color:#C27B1A; }
 .card-name { font-size:20px; font-weight:500; color:#1a1a1a; margin-bottom:6px; }
+.card-duration { font-size:11px; font-weight:400; color:#bbb; margin-left:6px; letter-spacing:0; }
 .card-tagline { font-size:12px; color:#888; line-height:1.6; margin-bottom:16px; }
 .steps { margin-bottom:16px; }
 .step { display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-bottom:.5px solid #f0ebe5; font-size:12px; color:#555; line-height:1.55; }
@@ -161,7 +162,7 @@ function googleTranslateElementInit() {
   <div class="grid" id="grid">
     <div class="card happiness">
       <div class="card-top"><div class="card-dot"></div><div class="card-category">행 복</div></div>
-      <div class="card-name">행복 프로그램</div>
+      <div class="card-name">행복 프로그램<span class="card-duration">· 2시간</span></div>
       <div class="card-tagline">일상의 스트레스를 날려버리고<br>행복을 드리는 Reborn의 최고 가성비 상품</div>
       <div class="steps">
         <div class="step"><div class="step-num happiness">1</div><span>발, 종아리 SCRUB or SPA (신경계)</span></div>
@@ -174,7 +175,7 @@ function googleTranslateElementInit() {
     </div>
     <div class="card love">
       <div class="card-top"><div class="card-dot"></div><div class="card-category">사 랑</div></div>
-      <div class="card-name">사랑 프로그램</div>
+      <div class="card-name">사랑 프로그램<span class="card-duration">· 2시간</span></div>
       <div class="card-tagline">특별한 날, 여성스러움을 강조하고 싶을 때<br>아름다움이 사라져가는 것을 걱정하지 마세요</div>
       <div class="steps">
         <div class="step"><div class="step-num love">1</div><span>럭셔리페이셜 (피부 위로 빛이 내리고)</span></div>
@@ -187,12 +188,12 @@ function googleTranslateElementInit() {
     </div>
     <div class="card hope">
       <div class="card-top"><div class="card-dot"></div><div class="card-category">희 망</div></div>
-      <div class="card-name">희망 프로그램</div>
+      <div class="card-name">희망 프로그램<span class="card-duration">· 2시간</span></div>
       <div class="card-tagline">다시 시작하는 기분. 내부적 노화로 인한<br>만성피로 및 주름을 해소하고자 하는 분께</div>
       <div class="steps">
         <div class="step"><div class="step-num hope">1</div><span>두피 or SPA — 긴장완화, 자율신경밸런스</span></div>
         <div class="step"><div class="step-num hope">2</div><span>등 — 척추와 경추, 어깨의 근육 정돈과이완</span></div>
-        <div class="step"><div class="step-num hope">3</div><span>리밸런시 위드 데콜테</span></div>
+        <div class="step"><div class="step-num hope">3</div><span>얼굴+리밸런시 위드 데콜테</span></div>
         <div class="step"><div class="step-num hope">4</div><span>발, 종아리 or 복부 밸런스 — 순환과 호르몬</span></div>
       </div>
       <div class="card-desc hope">호르몬밸런스와 말초신경의 순환. 피부의 탄력감과 넥, 숄더 라인의 아름다움. 내부적 조화로움으로 인생의 선순환을 시작하세요. 안티에이징 트리트먼트</div>
@@ -200,7 +201,7 @@ function googleTranslateElementInit() {
     </div>
     <div class="card gift">
       <div class="card-top"><div class="card-dot"></div><div class="card-category">선 물</div></div>
-      <div class="card-name">선물 프로그램</div>
+      <div class="card-name">선물 프로그램<span class="card-duration">· 2시간</span></div>
       <div class="card-tagline">행복·사랑·희망의 장점들을 모아<br>아름다움과 휴식을 모두 담은 스페셜 케어</div>
       <div class="steps">
         <div class="step"><div class="step-num gift">1</div><span>풀 바디 SCRUB — 피부표면과 근육의 밸런스</span></div>
@@ -247,18 +248,6 @@ function googleTranslateElementInit() {
     </div>
 
     <div class="form-section">
-      <label class="form-label">고객 이름</label>
-      <input class="form-input" id="inputName" placeholder="홍길동" type="text">
-    </div>
-    <div class="form-section">
-      <label class="form-label">연락처</label>
-      <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
-    </div>
-    <div class="form-section">
-      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
-      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
-    </div>
-    <div class="form-section">
       <label class="form-label">예약 날짜</label>
       <div class="cal-nav">
         <button onclick="changeMonth(-1)">‹</button>
@@ -275,6 +264,18 @@ function googleTranslateElementInit() {
       <label class="form-label">예약 시간 <span id="dateLabel" style="color:#bbb;font-weight:400;"></span></label>
       <div id="slotsWrap"><div class="slots-loading">날짜를 먼저 선택해주세요</div></div>
     </div>
+    <div class="form-section">
+      <label class="form-label">고객 이름</label>
+      <input class="form-input" id="inputName" placeholder="홍길동" type="text">
+    </div>
+    <div class="form-section">
+      <label class="form-label">연락처</label>
+      <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel">
+    </div>
+    <div class="form-section">
+      <label class="form-label">이메일 <span style="color:#bbb;font-size:11px;">(결제 링크 발송)</span></label>
+      <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email">
+    </div>
 
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">취소</button>
@@ -290,6 +291,11 @@ function googleTranslateElementInit() {
     <div class="pay-title">결제를 진행할까요?</div>
     <div class="pay-subtitle">아래 예약 내용을 최종 확인해주세요</div>
     <div class="pay-receipt" id="payReceipt"></div>
+    <div style="background:#fdf6ee;border:.5px solid #f0e4d4;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#8a7360;line-height:1.8;text-align:left;">
+      · 1인 예약만 가능해요. 2인 이상은 이메일(<a href="mailto:reborncolorteacher@gmail.com" style="color:inherit;text-decoration:underline;">reborncolorteacher@gmail.com</a>) 혹은 <a href="https://pf.kakao.com/_xifxlpxl" target="_blank" style="color:inherit;text-decoration:underline;">카카오톡채널(pf.kakao.com/_xifxlpxl)</a>로 문의해주세요.<br>
+      · 예약금 결제가 <strong>3시간 이내</strong>에 확인되지 않으면 예약이 자동 취소돼요.<br>
+      · <strong>30분 이상 지각</strong> 시에는 노쇼로 처리되어 케어를 받으실 수 없어요.
+    </div>
     <div style="margin:14px 0 6px;font-size:12px;color:#999;">결제 방법을 선택해주세요</div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button id="btnKakao" onclick="confirmPayment('kakao')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#FEE500;color:#3A1D1D;font-size:13px;font-weight:600;cursor:pointer;">💛 카카오페이</button>
@@ -321,6 +327,14 @@ window.onload = () => {
   if (!APPS_SCRIPT_URL) document.getElementById('setupBanner').classList.add('show');
   const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth();
 };
+// 추천 페이지 등 외부에서 #menuKey 형태로 들어오면 해당 메뉴 예약 모달을 자동으로 엽니다.
+(function(){
+  const key = location.hash.replace('#','');
+  if (key && menus[key]) {
+    window.addEventListener('DOMContentLoaded', () => setTimeout(() => openBooking(key), 100));
+  }
+})();
+
 
 function setInd(step) {
   [1,2,3].forEach(i => {
@@ -546,6 +560,7 @@ function showDone(data, name, method='kakao') {
     <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">${method==='kakao'&&!IS_MOBILE?'아래 QR 코드를 휴대폰 카메라로 스캔해 결제해주세요':'결제 페이지가 새 창으로 열렸습니다. 열리지 않았다면 아래 버튼을 눌러주세요 / Please complete your deposit payment below'}</div>
     ${method==='kakao'&&!IS_MOBILE?`<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — 50,000원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`:`<a href="${method==='kakao'?KAKAOPAY_URL:PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method==='kakao'?'background:#FEE500;color:#3A1D1D;':'background:#003087;color:#fff;'}">${method==='kakao'?'💛 카카오페이로 결제하기 — 50,000원':'🌐 PayPal로 결제하기 — $40 USD'}</a>`}
     <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
+    <div style="text-align:center;margin-top:10px;"><a href="reborn_spa_subscribe_landing.html" target="_blank" style="font-size:10px;color:#bbb;text-decoration:underline;">리본스파 소식 받아보기</a></div>
   `; document.getElementById('doneWrap').classList.add('open');
 }
 
