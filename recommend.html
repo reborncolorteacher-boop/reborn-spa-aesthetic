@@ -266,7 +266,7 @@ function googleTranslateElementInit() {
     <span class="badge">🚺 여성전용 · 남성은 동반 시 가능</span>
     <span class="badge">💳 예약금 5만원</span>
   </div>
-  <a class="top-link-all" href="index.html">이미 원하는 케어가 있어요, 전체 메뉴 바로 보기 →</a>
+  <a class="top-link-all" href="index.html" onclick="return goHome(event);">이미 원하는 케어가 있어요, 전체 메뉴 바로 보기 →</a>
 
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-dot active" data-step="0"></div>
@@ -363,13 +363,41 @@ function googleTranslateElementInit() {
 
     <div class="result-foot">
       <a href="#" onclick="restart(); return false;">↺ 다시 추천받기</a> &nbsp;·&nbsp;
-      <a href="index.html">전체 메뉴 보기</a>
+      <a href="index.html" onclick="return goHome(event);">전체 메뉴 보기</a>
     </div>
   </div>
 
 </div>
 
 <script>
+/* index.html의 슬라이드업 오버레이 iframe 안에서 열린 경우엔 같은 iframe에서
+   예약페이지로 바로 전환하고, 독립된 페이지로 열린 경우엔 index.html을 거쳐
+   오버레이를 새로 엽니다. */
+const PROGRAM_TITLES = {
+  'big5_booking.html': 'Big 5 Program',
+  'reborn_booking.html': "Re'born Program",
+  'feeling_booking.html': 'Feeling Program',
+  'purpose_booking.html': 'Purpose Program',
+  'special_booking.html': 'Special Program'
+};
+function goToBooking(file, key) {
+  if (window.self !== window.top) {
+    try {
+      window.parent.postMessage({ type: 'rebornFrameTitle', title: PROGRAM_TITLES[file] || '' }, '*');
+    } catch (e) {}
+    location.href = `${file}#${key}`;
+  } else {
+    location.href = `index.html#openBooking=${file}&key=${key}`;
+  }
+}
+function goHome(evt) {
+  if (window.self !== window.top) {
+    if (evt) evt.preventDefault();
+    try { window.parent.closePage(); } catch (e) { location.href = 'index.html'; }
+    return false;
+  }
+  return true;
+}
 /* ───────────────────────────────────────────
    추천 카탈로그
    각 항목은 실제 예약 페이지의 메뉴 key와 그대로 연결됩니다.
@@ -720,7 +748,7 @@ function renderRecommendations(items, opts) {
       : '';
     const card = document.createElement('div');
     card.className = 'rec-card';
-    card.onclick = () => { location.href = `index.html#openBooking=${it.file}&key=${it.key}`; };
+    card.onclick = () => { goToBooking(it.file, it.key); };
     card.innerHTML = `
       <div class="rec-top">
         <div class="rec-rank" style="background:${it.color}">${idx + 1}</div>
@@ -730,7 +758,7 @@ function renderRecommendations(items, opts) {
       </div>
       <div class="rec-reason" style="border-color:${it.color}">${it.reason}</div>
       <div class="rec-price" style="color:${it.color}; margin-bottom:10px;">${it.price}</div>
-      <button class="rec-btn" style="background:${it.color};" onclick="event.stopPropagation(); location.href='index.html#openBooking=${it.file}&key=${it.key}'">예약하러 가기 →</button>`;
+      <button class="rec-btn" style="background:${it.color};" onclick="event.stopPropagation(); goToBooking('${it.file}','${it.key}')">예약하러 가기 →</button>`;
     wrap.appendChild(card);
   });
 }
