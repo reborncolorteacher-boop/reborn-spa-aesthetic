@@ -69,6 +69,11 @@ body { font-family: Arial, Helvetica, 'Apple SD Gothic Neo', 'Noto Sans KR', san
 .cta .arrow { font-size: 15px; letter-spacing: 0; }
 
 .foot { text-align: center; margin-top: 26px; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #7a5c45; }
+
+/* 구글 번역 시 "리본"이 Ribbon으로 번역되지 않도록, 번역된 화면에서는 Re'born Spa로 표시 */
+.rb .e { display: none; }
+html.translated-ltr .rb .k, html.translated-rtl .rb .k, html:not([lang="ko"]) .rb .k { display: none; }
+html.translated-ltr .rb .e, html.translated-rtl .rb .e, html:not([lang="ko"]) .rb .e { display: inline; }
 </style>
 </head>
 <body>
@@ -117,7 +122,7 @@ function googleTranslateElementInit() {
     <div class="eyebrow">Invitation</div>
     <div class="brand">Re'born Spa Aesthetic</div>
     <div class="rule"></div>
-    <div class="invite">리본 스파에 초대합니다</div>
+    <div class="invite"><span class="rb notranslate" translate="no"><span class="k">리본 스파</span><span class="e">Re'born Spa</span></span>에 초대합니다</div>
     <div class="invite-sub">편하신 방법으로 예약해 주세요</div>
   </div>
 
@@ -125,7 +130,7 @@ function googleTranslateElementInit() {
     <div>
       <div class="label">Program</div>
       <div class="title">프로그램 보고 예약하기</div>
-      <div class="desc">리본 스파의 프로그램을 살펴보고<br>원하는 케어를 골라 예약해요</div>
+      <div class="desc"><span class="rb notranslate" translate="no"><span class="k">리본 스파</span><span class="e">Re'born Spa</span></span>의 프로그램을 살펴보고<br>원하는 케어를 골라 예약해요</div>
     </div>
     <div class="cta"><span>프로그램 보러 가기</span><span class="arrow">→</span></div>
   </a>
