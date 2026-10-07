@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리본 스파 빠른 예약</title>
+<!-- 링크 미리보기(카카오톡·인스타 DM 등) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Re'born Spa Aesthetic">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="리본 스파 빠른 예약">
+<meta property="og:description" content="메뉴는 당일 상담으로! 원하시는 시간대만 고르고 바로 예약하세요">
+<meta property="og:url" content="https://reborncolorteacher-boop.github.io/reborn-spa-aesthetic/quick_booking.html">
+<meta property="og:image" content="https://reborncolorteacher-boop.github.io/reborn-spa-aesthetic/ribbon_logo.png">
+<meta name="description" content="메뉴는 당일 상담으로! 원하시는 시간대만 고르고 바로 예약하세요">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #faf9f7; color: #1a1a1a; min-height: 100vh; padding: 2.5rem 1rem 4rem; }
+.wrap { max-width: 520px; margin: 0 auto; }
+
+/* 브랜드 헤더 */
+.brand { text-align: center; margin-bottom: 1.8rem; }
+.brand img { width: 44px; height: auto; margin-bottom: 10px; }
+.brand-badge { display:inline-block; font-size:11px; letter-spacing:.25em; color:#9a8c7e; text-transform:uppercase; border:.5px solid #d4cdc6; border-radius:20px; padding:4px 14px; margin-bottom:12px; }
+.brand-name { font-size:30px; font-weight:300; letter-spacing:.1em; color:#2a2320; margin-bottom:8px; }
+.brand-note { display:inline-block; font-size:13px; font-weight:500; color:#b07b5a; background:#fdf6ee; border:.5px solid #f0e4d4; border-radius:20px; padding:6px 14px; margin-bottom:12px; line-height:1.5; }
+.brand-sub { font-size:13px; color:#9a8c7e; line-height:1.8; }
+.divider { width:40px; height:1px; background:#d4cdc6; margin:16px auto 0; }
+
+.step-title { font-size:11px; letter-spacing:.2em; color:#aaa; text-transform:uppercase; margin:1.7rem 0 .7rem; padding-left:2px; }
+.card { background:#fff; border:.5px solid #e8e2db; border-radius:16px; padding:1.2rem; }
+
+/* 시간대 선택 */
+.tiers { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.tier { border:.5px solid #e0dbd4; border-radius:14px; padding:16px 6px; background:#fff; cursor:pointer; text-align:center; font-family:inherit; color:#1a1a1a; transition:all .15s; }
+.tier:hover { border-color:#aaa; }
+.tier.selected { background:#1a1a1a; border-color:#1a1a1a; color:#fff; }
+.tier-label { font-size:16px; font-weight:500; }
+.tier-hint { font-size:11px; margin-top:6px; opacity:.7; line-height:1.5; min-height:16px; }
+
+/* 캘린더 */
+.cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.cal-nav button { background:none; border:.5px solid #e0dbd4; border-radius:6px; width:28px; height:28px; cursor:pointer; font-size:14px; color:#555; }
+.cal-nav button:disabled { opacity:.3; cursor:default; }
+.cal-month { font-size:13px; font-weight:500; }
+.cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:3px; }
+.cal-weekday { text-align:center; font-size:10px; color:#bbb; padding:2px 0; }
+.cal-weekday:first-child { color:#e88; }
+.date-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.date-cell { aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:12px; border-radius:8px; cursor:pointer; border:.5px solid #f0ebe5; background:#fff; color:#1a1a1a; transition:all .12s; }
+.date-cell:hover:not(.past) { border-color:#bbb; }
+.date-cell.selected { background:#1a1a1a; color:#fff; border-color:transparent; }
+.date-cell.past { color:#ddd; cursor:default; background:#fafafa; }
+.date-cell.sunday { color:#e88; }
+.date-cell.sunday.selected { color:#fff; }
+.date-cell.today { font-weight:700; }
+
+/* 시간 슬롯 */
+.slots-wrap { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.slot { padding:8px 4px; text-align:center; border:.5px solid #e0dbd4; border-radius:8px; font-size:12px; cursor:pointer; background:#fff; color:#555; transition:all .12s; }
+.slot:hover:not(.booked) { border-color:#bbb; }
+.slot.selected { background:#1a1a1a; color:#fff; border-color:transparent; }
+.slot.booked { background:#fafafa; color:#ccc; cursor:default; text-decoration:line-through; }
+.slot-sub { font-size:10px; margin-top:2px; opacity:.8; }
+.slots-msg { text-align:center; font-size:12px; color:#bbb; padding:14px; line-height:1.7; }
+.slots-msg.err { color:#e07070; }
+
+/* 입력 */
+.form-section { margin-bottom:1rem; }
+.form-section:last-child { margin-bottom:0; }
+.form-label { font-size:11px; color:#999; margin-bottom:5px; display:block; letter-spacing:.05em; }
+.form-input { width:100%; padding:11px 12px; border:.5px solid #e0dbd4; border-radius:8px; font-size:16px; color:#1a1a1a; background:#fff; outline:none; font-family:inherit; transition:border-color .15s; }
+.form-input:focus { border-color:#aaa; }
+
+.guide { background:#fdf6ee; border:.5px solid #f0e4d4; border-radius:12px; padding:12px 14px; margin-top:1.4rem; font-size:12px; color:#8a7360; line-height:1.8; }
+.btn-main { width:100%; margin-top:1.2rem; padding:14px; border-radius:12px; border:none; background:#1a1a1a; color:#fff; font-size:15px; font-weight:500; cursor:pointer; font-family:inherit; transition:opacity .15s; }
+.btn-main:hover { opacity:.85; }
+.btn-main:disabled { opacity:.3; cursor:default; }
+.summary-line { text-align:center; font-size:12px; color:#9a8c7e; margin-top:12px; min-height:18px; }
+
+/* 결제 확인 팝업 */
+.pay-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:300; align-items:center; justify-content:center; padding:1rem; }
+.pay-overlay.open { display:flex; }
+.pay-modal { background:#fff; border-radius:22px; padding:2rem 1.8rem; width:380px; max-width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 28px 70px rgba(0,0,0,.2); text-align:center; }
+.pay-title { font-size:18px; font-weight:500; margin-bottom:4px; }
+.pay-subtitle { font-size:13px; color:#aaa; margin-bottom:18px; }
+.pay-receipt { background:#faf9f7; border-radius:12px; padding:14px 16px; margin-bottom:14px; text-align:left; }
+.pay-row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:6px 0; border-bottom:.5px solid #f0ebe5; font-size:13px; }
+.pay-row:last-child { border-bottom:none; padding-top:10px; margin-top:2px; }
+.pay-label { color:#999; flex-shrink:0; }
+.pay-value { color:#1a1a1a; font-weight:500; text-align:right; }
+.pay-amount { font-size:19px; font-weight:500; }
+.btn-back { width:100%; padding:11px; border-radius:10px; border:.5px solid #ddd; background:transparent; font-size:13px; cursor:pointer; color:#888; font-family:inherit; }
+.btn-back:hover { background:#f5f5f5; }
+
+/* 예약 완료 */
+.done { display:none; text-align:center; padding:2rem 0 1rem; }
+.done.open { display:block; }
+.done-circle { width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 18px; color:#fff; background:#1a1a1a; }
+.done-title { font-size:21px; font-weight:500; margin-bottom:8px; }
+.done-badge { display:inline-block; background:#f5f3ef; border-radius:8px; padding:7px 18px; font-size:12px; font-weight:500; color:#666; margin:10px 0 16px; letter-spacing:.05em; }
+.done-card { background:#fff; border:.5px solid #e8e2db; border-radius:14px; padding:14px 18px; max-width:330px; margin:0 auto 16px; text-align:left; }
+.done-row { display:flex; justify-content:space-between; gap:12px; font-size:13px; padding:5px 0; border-bottom:.5px solid #f5f3ef; }
+.done-row:last-child { border-bottom:none; }
+.done-row-label { color:#aaa; flex-shrink:0; }
+.done-row-value { font-weight:500; text-align:right; }
+.done-note { font-size:12px; color:#bbb; line-height:1.8; margin-top:4px; }
+.done-link { display:inline-block; margin-top:22px; padding:9px 26px; border-radius:30px; border:.5px solid #ddd; font-size:13px; color:#666; text-decoration:none; }
+.done-link:hover { background:#f5f5f5; }
+
+.footer { text-align:center; margin-top:3rem; font-size:11px; color:#bbb; letter-spacing:.1em; }
+</style>
+</head>
+<body>
+<!-- 구글 번역 -->
+<div id="google_translate_element" style="position:fixed;top:12px;right:12px;z-index:9999;"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ko',
+    includedLanguages: 'en,ja,zh-CN,zh-TW,fr,de,es,ru,vi,th,ar,tr',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="wrap">
+  <div class="brand">
+    <img src="ribbon_logo.png" alt="Re'born" onerror="this.style.display='none'">
+    <div class="brand-badge">Quick Booking</div>
+    <div class="brand-name">빠른 예약</div>
+    <div class="brand-note">예약금(50,000원)까지 결제해야 예약이 완료됩니다</div>
+    <div class="brand-sub">메뉴는 당일 상담으로 정해요.<br>원하시는 시간대와 날짜만 골라 주세요.</div>
+    <div class="divider"></div>
+  </div>
+
+  <div id="bookingForm">
+    <div class="step-title">1 · 시간대</div>
+    <div class="tiers" id="tiers"></div>
+
+    <div class="step-title">2 · 날짜</div>
+    <div class="card">
+      <div class="cal-nav">
+        <button id="calPrev" onclick="changeMonth(-1)" aria-label="이전 달">‹</button>
+        <span class="cal-month" id="calMonth"></span>
+        <button onclick="changeMonth(1)" aria-label="다음 달">›</button>
+      </div>
+      <div class="cal-weekdays">
+        <div class="cal-weekday">일</div><div class="cal-weekday">월</div><div class="cal-weekday">화</div>
+        <div class="cal-weekday">수</div><div class="cal-weekday">목</div><div class="cal-weekday">금</div><div class="cal-weekday">토</div>
+      </div>
+      <div class="date-grid" id="dateGrid"></div>
+    </div>
+
+    <div class="step-title">3 · 시작 시간 <span id="dateLabel" style="letter-spacing:0;text-transform:none;"></span></div>
+    <div class="card" id="slotsWrap"><div class="slots-msg">시간대와 날짜를 먼저 선택해 주세요</div></div>
+
+    <div class="step-title">4 · 예약자 정보</div>
+    <div class="card">
+      <div class="form-section">
+        <label class="form-label" for="inputName">고객 이름</label>
+        <input class="form-input" id="inputName" placeholder="홍길동" type="text" autocomplete="name">
+      </div>
+      <div class="form-section">
+        <label class="form-label" for="inputPhone">연락처</label>
+        <input class="form-input" id="inputPhone" placeholder="010-0000-0000" type="tel" autocomplete="tel">
+      </div>
+      <div class="form-section">
+        <label class="form-label" for="inputEmail">이메일 <span style="color:#bbb;font-size:11px;">(선택 · 결제 링크 발송)</span></label>
+        <input class="form-input" id="inputEmail" placeholder="example@email.com" type="email" autocomplete="email">
+      </div>
+    </div>
+
+    <div class="guide">
+      · 케어 메뉴와 금액은 <strong>당일 상담 후</strong> 정해요.<br>
+      · 예약 접수 후 예약금(50,000원) 결제까지 이어집니다.
+    </div>
+
+    <button class="btn-main" id="btnNext" onclick="goToPayStep()" disabled>예약금 결제하기 →</button>
+    <div class="summary-line" id="summaryLine"></div>
+  </div>
+
+  <div class="done" id="doneWrap">
+    <div class="done-circle">✓</div>
+    <div class="done-title" id="doneTitle"></div>
+    <div id="doneMsg" style="font-size:12px;color:#888;margin:6px 0 4px;line-height:1.7;"></div>
+    <div class="done-badge" id="doneBadge"></div>
+    <div class="done-card" id="doneCard"></div>
+    <div class="done-note">담당자가 곧 예약을 확인 후 연락드리겠습니다 ✨<br>예약번호를 꼭 저장해 두세요.</div>
+    <a class="done-link" href="reborn_booking.html">프로그램 메뉴 둘러보기</a>
+  </div>
+
+  <div class="footer">© Reborn Spa · Quick Booking</div>
+</div>
+
+<!-- 결제 확인 팝업 -->
+<div class="pay-overlay" id="payOverlay">
+  <div class="pay-modal">
+    <div class="pay-title">예약금 결제를 진행할까요?</div>
+    <div class="pay-subtitle">아래 예약 내용을 최종 확인해주세요</div>
+    <div class="pay-receipt" id="payReceipt"></div>
+    <div style="background:#fdf6ee;border:.5px solid #f0e4d4;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#8a7360;line-height:1.8;text-align:left;">
+      · 1인 예약만 가능해요. 2인 이상은 이메일(<a href="mailto:reborncolorteacher@gmail.com" style="color:inherit;text-decoration:underline;">reborncolorteacher@gmail.com</a>) 혹은 <a href="https://pf.kakao.com/_xifxlpxl" target="_blank" style="color:inherit;text-decoration:underline;">카카오톡채널(pf.kakao.com/_xifxlpxl)</a>로 문의해주세요.<br>
+      · 예약금 결제가 <strong>3시간 이내</strong>에 확인되지 않으면 예약이 자동 취소돼요.<br>
+      · <strong>30분 이상 지각</strong> 시에는 노쇼로 처리되어 케어를 받으실 수 없어요.
+    </div>
+    <div style="margin:14px 0 6px;font-size:12px;color:#999;">결제 방법을 선택해주세요</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button id="btnKakao" onclick="confirmPayment('kakao')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#FEE500;color:#3A1D1D;font-size:13px;font-weight:600;cursor:pointer;">💛 카카오페이</button>
+      <button id="btnPaypal" onclick="confirmPayment('paypal')" style="flex:1;padding:10px 6px;border:none;border-radius:12px;background:#003087;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">🌐 PayPal</button>
+    </div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:14px;line-height:1.7;">
+      버튼을 누르면 예약 접수 후 결제 페이지가 바로 열립니다.<br>예약금 결제 완료 후 예약이 최종 확정됩니다.<br>Your booking is confirmed only after the deposit payment.
+    </div>
+    <button class="btn-back" id="btnBack" onclick="backToForm()">← 수정하기</button>
+  </div>
+</div>
+
+<script>
+// ★ 기존 예약 페이지(reborn_booking.html)와 동일한 구글 Apps Script URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0CYWFvu8DXEORBNZ5m3fp3tYKG7JdXwjlnn2um7EuEZBEAbe0MJciIVWrsk4We_cI/exec';
+
+// 결제 링크 (reborn_booking.html과 동일)
+const KAKAOPAY_URL = 'https://qr.kakaopay.com/FRXDr9Jit';
+const PAYPAL_URL = 'https://www.paypal.me/jonghyun78/40USD';
+const KAKAO_QR_IMG = 'data:image/png;base64,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';
+const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+// ─── 설정 (여기만 고치면 됩니다) ───
+// 운영시간 09:00~23:00 (reborn_booking.html과 동일)
+const OPEN_HOUR = 9, CLOSE_HOUR = 23;
+// 시간대 옵션. hint에 문구를 넣으면 카드 아래에 표시됩니다 (예: '90,000원~'). 비워 두면 표시하지 않아요.
+const TIERS = {
+  '1h': { label:'1시간',      dur:1, hint:'' },
+  '2h': { label:'2시간',      dur:2, hint:'' },
+  '3h': { label:'3시간 이상', dur:3, hint:'' },
+};
+// 예약 시트에 기록되는 금액. 메뉴가 정해지기 전이라 0으로 보냅니다. (예약금 50,000원은 결제 단계에서 별도 안내)
+const QUICK_PRICE = 0;
+
+// ─── 상태 ───
+let tierKey = null, selectedDate = null, selectedHour = null;
+let calYear, calMonth, slotReq = 0;
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function pad(n) { return String(n).padStart(2,'0'); }
+function dayName(ds) { const [y,m,d] = ds.split('-').map(Number); return ['일','월','화','수','목','금','토'][new Date(y,m-1,d).getDay()]; }
+function dateKo(ds) { const [y,m,d] = ds.split('-').map(Number); return `${y}년 ${m}월 ${d}일 (${dayName(ds)}요일)`; }
+function todayStr() { const n = new Date(); return `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`; }
+function timeRange(h, tier) { return `${h}:00 ~ ${h+tier.dur}:00` + (tier.dur === 3 ? ' (3시간 이상)' : ''); }
+function programLabel(tier) { return `빠른 예약 · ${tier.label} (메뉴는 당일 상담)`; }
+
+// ─── 시간대 카드 ───
+function renderTiers() {
+  const box = document.getElementById('tiers'); box.innerHTML = '';
+  Object.keys(TIERS).forEach(k => {
+    const t = TIERS[k];
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tier' + (k === tierKey ? ' selected' : '');
+    b.innerHTML = `<div class="tier-label">${esc(t.label)}</div><div class="tier-hint">${esc(t.hint || '')}</div>`;
+    b.onclick = () => selectTier(k);
+    box.appendChild(b);
+  });
+}
+function selectTier(k) {
+  tierKey = k; selectedHour = null;
+  renderTiers(); loadSlots(); checkReady();
+}
+
+// ─── 캘린더 ───
+function initCal() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); renderCal(); }
+function changeMonth(d) {
+  const n = new Date();
+  if (d < 0 && calYear === n.getFullYear() && calMonth <= n.getMonth()) return;
+  calMonth += d;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCal();
+}
+function renderCal() {
+  document.getElementById('calMonth').textContent = `${calYear}년 ${calMonth+1}월`;
+  const n = new Date();
+  document.getElementById('calPrev').disabled = (calYear === n.getFullYear() && calMonth <= n.getMonth());
+  const grid = document.getElementById('dateGrid'); grid.innerHTML = '';
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const days = new Date(calYear, calMonth+1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < first; i++) { const e = document.createElement('div'); e.className = 'date-cell'; e.style.visibility = 'hidden'; grid.appendChild(e); }
+  for (let d = 1; d <= days; d++) {
+    const dt = new Date(calYear, calMonth, d);
+    const ds = `${calYear}-${pad(calMonth+1)}-${pad(d)}`;
+    const e = document.createElement('div');
+    e.className = 'date-cell' + (dt < today ? ' past' : '') + (dt.getDay() === 0 ? ' sunday' : '') + (ds === selectedDate ? ' selected' : '') + (dt.getTime() === today.getTime() ? ' today' : '');
+    e.textContent = d;
+    if (dt >= today) e.onclick = () => selectDate(ds);
+    grid.appendChild(e);
+  }
+}
+function selectDate(ds) {
+  selectedDate = ds; selectedHour = null;
+  const [, m, d] = ds.split('-').map(Number);
+  document.getElementById('dateLabel').textContent = `— ${m}월 ${d}일`;
+  renderCal(); loadSlots(); checkReady();
+}
+
+// ─── 시간 슬롯 ───
+// 서버 응답을 선택한 시간대(dur)에 맞는 시작 시간 목록으로 바꿉니다.
+function computeSlots(raw, dur) {
+  const slots = (raw && raw.slots) || [];
+  const list = [];
+  if (slots.length && 'available' in slots[0]) {
+    // 시간별 available 플래그 형식: 필요한 모든 시간이 비어 있어야 예약 가능(보수적으로 계산)
+    const free = {};
+    slots.forEach(s => { free[s.hour] = !!s.available; });
+    for (let h = OPEN_HOUR; h + dur <= CLOSE_HOUR; h++) {
+      let ok = true;
+      for (let i = 0; i < dur; i++) { if (free[h+i] !== true) { ok = false; break; } }
+      list.push({ hour:h, booked:!ok });
+    }
+  } else {
+    // 예약된 시간대 목록 형식
+    const blocked = new Set();
+    slots.forEach(b => { const d = b.duration || 2; for (let i = 0; i < d; i++) blocked.add(b.hour + i); });
+    for (let h = OPEN_HOUR; h + dur <= CLOSE_HOUR; h++) {
+      let ok = true;
+      for (let i = 0; i < dur; i++) { if (blocked.has(h+i)) { ok = false; break; } }
+      list.push({ hour:h, booked:!ok });
+    }
+  }
+  return list;
+}
+async function loadSlots() {
+  const wrap = document.getElementById('slotsWrap');
+  if (!tierKey || !selectedDate) { wrap.innerHTML = '<div class="slots-msg">시간대와 날짜를 먼저 선택해 주세요</div>'; return; }
+  const myReq = ++slotReq, ds = selectedDate, tier = TIERS[tierKey];
+  wrap.innerHTML = '<div class="slots-msg">예약 가능 시간 확인 중...</div>';
+  let raw;
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=getAvailable&date=${ds}`, { redirect:'follow' });
+    raw = await res.json();
+  } catch (e) {
+    if (myReq !== slotReq) return;
+    wrap.innerHTML = '<div class="slots-msg err">예약 가능 시간을 불러오지 못했어요.<br>잠시 후 다시 시도해 주세요.</div>';
+    return;
+  }
+  if (myReq !== slotReq) return; // 그 사이 다른 날짜/시간대를 눌렀다면 무시
+  if (raw && raw.closed) {
+    wrap.innerHTML = `<div class="slots-msg err">${raw.outOfRange ? '예약은 당일부터 1년 이내까지만 가능합니다.' : '해당 날짜는 휴무일입니다.'}</div>`;
+    return;
+  }
+  renderSlots(computeSlots(raw, tier.dur), tier);
+}
+function renderSlots(list, tier) {
+  const wrap = document.getElementById('slotsWrap'); wrap.innerHTML = '';
+  const now = new Date(), isToday = selectedDate === todayStr();
+  const grid = document.createElement('div'); grid.className = 'slots-wrap';
+  let any = false;
+  list.forEach(s => {
+    const past = isToday && s.hour <= now.getHours();
+    const off = s.booked || past;
+    if (!off) any = true;
+    const el = document.createElement('div');
+    el.className = 'slot' + (off ? ' booked' : '') + (!off && s.hour === selectedHour ? ' selected' : '');
+    el.innerHTML = `<div style="font-weight:600">${s.hour}:00</div><div class="slot-sub">${off ? (past && !s.booked ? '마감' : '예약됨') : '~ ' + (s.hour + tier.dur) + ':00'}</div>`;
+    if (!off) el.onclick = () => selectSlot(s.hour);
+    grid.appendChild(el);
+  });
+  wrap.appendChild(grid);
+  if (!any) {
+    const m = document.createElement('div'); m.className = 'slots-msg';
+    m.textContent = '이 날짜에는 예약 가능한 시간이 없어요. 다른 날짜나 시간대를 선택해 주세요.';
+    wrap.appendChild(m);
+  }
+}
+function selectSlot(h) {
+  selectedHour = h;
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+  // 다시 그리지 않고 클릭된 칸만 표시
+  document.querySelectorAll('.slot:not(.booked)').forEach(s => { if (s.firstChild.textContent === h + ':00') s.classList.add('selected'); });
+  checkReady();
+}
+
+// ─── 입력 검사 ───
+function checkReady() {
+  const n = document.getElementById('inputName').value.trim();
+  const p = document.getElementById('inputPhone').value.trim();
+  const e = document.getElementById('inputEmail').value.trim();
+  const phoneOk = p.replace(/\D/g, '').length >= 7;
+  const emailOk = !e || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  document.getElementById('btnNext').disabled = !(tierKey && selectedDate && selectedHour !== null && n && phoneOk && emailOk);
+  const line = document.getElementById('summaryLine');
+  line.textContent = (tierKey && selectedDate && selectedHour !== null)
+    ? `${dateKo(selectedDate)} ${timeRange(selectedHour, TIERS[tierKey])}` : '';
+}
+document.addEventListener('input', e => { if (['inputName','inputPhone','inputEmail'].includes(e.target.id)) checkReady(); });
+
+// ─── 결제 확인 ───
+function goToPayStep() {
+  const tier = TIERS[tierKey];
+  const name = document.getElementById('inputName').value.trim();
+  const phone = document.getElementById('inputPhone').value.trim();
+  document.getElementById('payReceipt').innerHTML = `
+    <div class="pay-row"><span class="pay-label">프로그램</span><span class="pay-value" style="font-size:12px;">${esc(programLabel(tier))}</span></div>
+    <div class="pay-row"><span class="pay-label">예약자</span><span class="pay-value">${esc(name)}</span></div>
+    <div class="pay-row"><span class="pay-label">연락처</span><span class="pay-value">${esc(phone)}</span></div>
+    <div class="pay-row"><span class="pay-label">날짜</span><span class="pay-value">${esc(dateKo(selectedDate))}</span></div>
+    <div class="pay-row"><span class="pay-label">시간</span><span class="pay-value">${esc(timeRange(selectedHour, tier))}</span></div>
+    <div class="pay-row"><span class="pay-label">예약금</span><span class="pay-amount">50,000 ₩</span></div>
+  `;
+  document.getElementById('payOverlay').classList.add('open');
+}
+function backToForm() { document.getElementById('payOverlay').classList.remove('open'); }
+
+async function confirmPayment(method) {
+  const btnKakao = document.getElementById('btnKakao'), btnPaypal = document.getElementById('btnPaypal'), btnBack = document.getElementById('btnBack');
+  btnKakao.disabled = true; btnPaypal.disabled = true; btnBack.disabled = true;
+  (method === 'kakao' ? btnKakao : btnPaypal).textContent = '처리 중...';
+  const tier = TIERS[tierKey];
+  const name = document.getElementById('inputName').value.trim();
+  const phone = document.getElementById('inputPhone').value.trim();
+  const email = document.getElementById('inputEmail').value.trim();
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      redirect:'follow',
+      headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({ action:'booking', name, phone, email, date:selectedDate, hour:selectedHour, duration:tier.dur, program:programLabel(tier), price:QUICK_PRICE })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (method === 'paypal' || IS_MOBILE) window.open(method === 'kakao' ? KAKAOPAY_URL : PAYPAL_URL, '_blank');
+      showDone(data, name, method, tier);
+    } else {
+      alert(data.message || '예약 중 오류가 발생했습니다.');
+    }
+  } catch (e) {
+    alert('서버 연결 오류입니다. 잠시 후 다시 시도해주세요.');
+  }
+  btnKakao.disabled = false; btnPaypal.disabled = false; btnBack.disabled = false;
+  btnKakao.textContent = '💛 카카오페이'; btnPaypal.textContent = '🌐 PayPal';
+}
+
+function showDone(data, name, method, tier) {
+  document.getElementById('payOverlay').classList.remove('open');
+  document.getElementById('bookingForm').style.display = 'none';
+  document.getElementById('doneTitle').textContent = `${name}님, 예약이 접수되었습니다!`;
+  document.getElementById('doneBadge').textContent = `예약번호: ${data.bookingId}`;
+  document.getElementById('doneCard').innerHTML = `
+    <div class="done-row"><span class="done-row-label">프로그램</span><span class="done-row-value" style="font-size:12px;">${esc(programLabel(tier))}</span></div>
+    <div class="done-row"><span class="done-row-label">날짜</span><span class="done-row-value">${esc(dateKo(selectedDate))}</span></div>
+    <div class="done-row"><span class="done-row-label">시간</span><span class="done-row-value">${esc(timeRange(selectedHour, tier))}</span></div>
+    <div class="done-row"><span class="done-row-label">예약금</span><span class="done-row-value">50,000 ₩</span></div>
+  `;
+  const qr = method === 'kakao' && !IS_MOBILE;
+  document.getElementById('doneMsg').innerHTML = `
+    <div style="margin:12px 0 6px;font-size:13px;color:#7a6a5a;">${qr ? '아래 QR 코드를 휴대폰 카메라로 스캔해 결제해주세요' : '결제 페이지가 새 창으로 열렸습니다. 열리지 않았다면 아래 버튼을 눌러주세요 / Please complete your deposit payment below'}</div>
+    ${qr
+      ? `<div style="text-align:center;padding:14px;border-radius:12px;background:#FEE500;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:#3A1D1D;margin-bottom:8px;">💛 카카오페이 — 50,000원</div><img src="${KAKAO_QR_IMG}" alt="카카오페이 QR" style="width:160px;height:160px;border-radius:8px;background:#fff;"><div style="font-size:12px;color:#3A1D1D;margin-top:8px;line-height:1.6;">휴대폰 카메라로 QR 코드를 스캔하면<br>카카오페이 송금 화면으로 연결됩니다</div></div>`
+      : `<a href="${method === 'kakao' ? KAKAOPAY_URL : PAYPAL_URL}" target="_blank" style="display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:8px;${method === 'kakao' ? 'background:#FEE500;color:#3A1D1D;' : 'background:#003087;color:#fff;'}">${method === 'kakao' ? '💛 카카오페이로 결제하기 — 50,000원' : '🌐 PayPal로 결제하기 — $40 USD'}</a>`}
+    <div style="font-size:11px;color:#aaa;line-height:1.8;margin-top:8px;">결제 완료 후 예약이 최종 확정됩니다.<br>결제 링크는 이메일로도 발송되었습니다.<br><span style="color:#e07070;">※ 당일 취소는 예약금이 환불되지 않습니다.</span></div>
+  `;
+  document.getElementById('doneWrap').classList.add('open');
+  window.scrollTo(0, 0);
+}
+
+// ─── 시작 ───
+// 링크 끝에 #1h, #2h, #3h 를 붙이면 해당 시간대가 미리 선택된 채로 열립니다.
+(function () {
+  initCal();
+  const k = location.hash.replace('#', '');
+  if (TIERS[k]) tierKey = k;
+  renderTiers(); checkReady();
+})();
+</script>
+</body>
+</html>
